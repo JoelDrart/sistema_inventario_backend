@@ -1,15 +1,128 @@
 {
-  "id": "00000000-0000-0000-0000-000000000000",
-  "prevId": "",
+  "id": "f9bcb6ad-ec6b-4077-9558-42990bd2508e",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.sucursal": {
-      "name": "sucursal",
+    "public.auditoria": {
+      "name": "auditoria",
       "schema": "",
       "columns": {
-        "id_sucursal": {
-          "name": "id_sucursal",
+        "id_auditoria": {
+          "name": "id_auditoria",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_usuario": {
+          "name": "id_usuario",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accion": {
+          "name": "accion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tabla_afectada": {
+          "name": "tabla_afectada",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_registro": {
+          "name": "id_registro",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valor_anterior": {
+          "name": "valor_anterior",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valor_nuevo": {
+          "name": "valor_nuevo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_auditoria_fecha": {
+          "name": "idx_auditoria_fecha",
+          "columns": [
+            {
+              "expression": "fecha",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "timestamp_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "auditoria_id_usuario_fkey": {
+          "name": "auditoria_id_usuario_fkey",
+          "tableFrom": "auditoria",
+          "tableTo": "empleado",
+          "columnsFrom": [
+            "id_usuario"
+          ],
+          "columnsTo": [
+            "id_empleado"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.bodega": {
+      "name": "bodega",
+      "schema": "",
+      "columns": {
+        "id_bodega": {
+          "name": "id_bodega",
           "type": "varchar(50)",
           "primaryKey": true,
           "notNull": true
@@ -20,17 +133,24 @@
           "primaryKey": false,
           "notNull": true
         },
-        "direccion": {
-          "name": "direccion",
+        "descripcion": {
+          "name": "descripcion",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "telefono": {
-          "name": "telefono",
-          "type": "varchar(20)",
+        "id_sucursal": {
+          "name": "id_sucursal",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false
+        },
+        "es_principal": {
+          "name": "es_principal",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         },
         "estado": {
           "name": "estado",
@@ -55,11 +175,996 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "bodega_id_sucursal_fkey": {
+          "name": "bodega_id_sucursal_fkey",
+          "tableFrom": "bodega",
+          "tableTo": "sucursal",
+          "columnsFrom": [
+            "id_sucursal"
+          ],
+          "columnsTo": [
+            "id_sucursal"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {},
       "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.caja": {
+      "name": "caja",
+      "schema": "",
+      "columns": {
+        "id_caja": {
+          "name": "id_caja",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id_sucursal": {
+          "name": "id_sucursal",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha_apertura": {
+          "name": "fecha_apertura",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha_cierre": {
+          "name": "fecha_cierre",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_empleado_apertura": {
+          "name": "id_empleado_apertura",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_empleado_cierre": {
+          "name": "id_empleado_cierre",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "saldo_inicial": {
+          "name": "saldo_inicial",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saldo_final": {
+          "name": "saldo_final",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observaciones": {
+          "name": "observaciones",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "caja_id_sucursal_fkey": {
+          "name": "caja_id_sucursal_fkey",
+          "tableFrom": "caja",
+          "tableTo": "sucursal",
+          "columnsFrom": [
+            "id_sucursal"
+          ],
+          "columnsTo": [
+            "id_sucursal"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "caja_id_empleado_apertura_fkey": {
+          "name": "caja_id_empleado_apertura_fkey",
+          "tableFrom": "caja",
+          "tableTo": "empleado",
+          "columnsFrom": [
+            "id_empleado_apertura"
+          ],
+          "columnsTo": [
+            "id_empleado"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "caja_id_empleado_cierre_fkey": {
+          "name": "caja_id_empleado_cierre_fkey",
+          "tableFrom": "caja",
+          "tableTo": "empleado",
+          "columnsFrom": [
+            "id_empleado_cierre"
+          ],
+          "columnsTo": [
+            "id_empleado"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.cliente": {
+      "name": "cliente",
+      "schema": "",
+      "columns": {
+        "id_cliente": {
+          "name": "id_cliente",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "apellido": {
+          "name": "apellido",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "documento_identidad": {
+          "name": "documento_identidad",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "direccion": {
+          "name": "direccion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha_registro": {
+          "name": "fecha_registro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_DATE"
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'activo'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_cliente_documento": {
+          "name": "idx_cliente_documento",
+          "columns": [
+            {
+              "expression": "documento_identidad",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_cliente_email": {
+          "name": "idx_cliente_email",
+          "columns": [
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "cliente_documento_identidad_key": {
+          "name": "cliente_documento_identidad_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "documento_identidad"
+          ]
+        },
+        "cliente_email_key": {
+          "name": "cliente_email_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.compra": {
+      "name": "compra",
+      "schema": "",
+      "columns": {
+        "id_compra": {
+          "name": "id_compra",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_proveedor": {
+          "name": "id_proveedor",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_empleado": {
+          "name": "id_empleado",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numero_factura": {
+          "name": "numero_factura",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total": {
+          "name": "total",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observaciones": {
+          "name": "observaciones",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_compra_fecha": {
+          "name": "idx_compra_fecha",
+          "columns": [
+            {
+              "expression": "fecha",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "date_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "compra_id_proveedor_fkey": {
+          "name": "compra_id_proveedor_fkey",
+          "tableFrom": "compra",
+          "tableTo": "proveedor",
+          "columnsFrom": [
+            "id_proveedor"
+          ],
+          "columnsTo": [
+            "id_proveedor"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "compra_id_empleado_fkey": {
+          "name": "compra_id_empleado_fkey",
+          "tableFrom": "compra",
+          "tableTo": "empleado",
+          "columnsFrom": [
+            "id_empleado"
+          ],
+          "columnsTo": [
+            "id_empleado"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.compra_detalle": {
+      "name": "compra_detalle",
+      "schema": "",
+      "columns": {
+        "id_lote": {
+          "name": "id_lote",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_compra": {
+          "name": "id_compra",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_producto": {
+          "name": "id_producto",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_bodega": {
+          "name": "id_bodega",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cantidad": {
+          "name": "cantidad",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cantidad_disponible": {
+          "name": "cantidad_disponible",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "costo_unitario": {
+          "name": "costo_unitario",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha_caducidad": {
+          "name": "fecha_caducidad",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha_recepcion": {
+          "name": "fecha_recepcion",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_compra_detalle_producto": {
+          "name": "idx_compra_detalle_producto",
+          "columns": [
+            {
+              "expression": "id_producto",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "compra_detalle_id_compra_fkey": {
+          "name": "compra_detalle_id_compra_fkey",
+          "tableFrom": "compra_detalle",
+          "tableTo": "compra",
+          "columnsFrom": [
+            "id_compra"
+          ],
+          "columnsTo": [
+            "id_compra"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "compra_detalle_id_producto_fkey": {
+          "name": "compra_detalle_id_producto_fkey",
+          "tableFrom": "compra_detalle",
+          "tableTo": "producto",
+          "columnsFrom": [
+            "id_producto"
+          ],
+          "columnsTo": [
+            "id_producto"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "compra_detalle_id_bodega_fkey": {
+          "name": "compra_detalle_id_bodega_fkey",
+          "tableFrom": "compra_detalle",
+          "tableTo": "bodega",
+          "columnsFrom": [
+            "id_bodega"
+          ],
+          "columnsTo": [
+            "id_bodega"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.devolucion": {
+      "name": "devolucion",
+      "schema": "",
+      "columns": {
+        "id_devolucion": {
+          "name": "id_devolucion",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_factura": {
+          "name": "id_factura",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_empleado": {
+          "name": "id_empleado",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "total": {
+          "name": "total",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "motivo": {
+          "name": "motivo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "devolucion_id_factura_fkey": {
+          "name": "devolucion_id_factura_fkey",
+          "tableFrom": "devolucion",
+          "tableTo": "factura",
+          "columnsFrom": [
+            "id_factura"
+          ],
+          "columnsTo": [
+            "id_factura"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_id_empleado_fkey": {
+          "name": "devolucion_id_empleado_fkey",
+          "tableFrom": "devolucion",
+          "tableTo": "empleado",
+          "columnsFrom": [
+            "id_empleado"
+          ],
+          "columnsTo": [
+            "id_empleado"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.devolucion_detalle": {
+      "name": "devolucion_detalle",
+      "schema": "",
+      "columns": {
+        "id_detalle_dev": {
+          "name": "id_detalle_dev",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_devolucion": {
+          "name": "id_devolucion",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_factura_detalle": {
+          "name": "id_factura_detalle",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_producto": {
+          "name": "id_producto",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_lote": {
+          "name": "id_lote",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cantidad": {
+          "name": "cantidad",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "precio_unitario": {
+          "name": "precio_unitario",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id_bodega_destino": {
+          "name": "id_bodega_destino",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "devolucion_detalle_id_devolucion_fkey": {
+          "name": "devolucion_detalle_id_devolucion_fkey",
+          "tableFrom": "devolucion_detalle",
+          "tableTo": "devolucion",
+          "columnsFrom": [
+            "id_devolucion"
+          ],
+          "columnsTo": [
+            "id_devolucion"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_detalle_id_factura_detalle_fkey": {
+          "name": "devolucion_detalle_id_factura_detalle_fkey",
+          "tableFrom": "devolucion_detalle",
+          "tableTo": "factura_detalle",
+          "columnsFrom": [
+            "id_factura_detalle"
+          ],
+          "columnsTo": [
+            "id_detalle"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_detalle_id_producto_fkey": {
+          "name": "devolucion_detalle_id_producto_fkey",
+          "tableFrom": "devolucion_detalle",
+          "tableTo": "producto",
+          "columnsFrom": [
+            "id_producto"
+          ],
+          "columnsTo": [
+            "id_producto"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_detalle_id_lote_fkey": {
+          "name": "devolucion_detalle_id_lote_fkey",
+          "tableFrom": "devolucion_detalle",
+          "tableTo": "compra_detalle",
+          "columnsFrom": [
+            "id_lote"
+          ],
+          "columnsTo": [
+            "id_lote"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_detalle_id_bodega_destino_fkey": {
+          "name": "devolucion_detalle_id_bodega_destino_fkey",
+          "tableFrom": "devolucion_detalle",
+          "tableTo": "bodega",
+          "columnsFrom": [
+            "id_bodega_destino"
+          ],
+          "columnsTo": [
+            "id_bodega"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.devolucion_proveedor": {
+      "name": "devolucion_proveedor",
+      "schema": "",
+      "columns": {
+        "id_devolucion_prov": {
+          "name": "id_devolucion_prov",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_compra": {
+          "name": "id_compra",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_empleado": {
+          "name": "id_empleado",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "total": {
+          "name": "total",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "motivo": {
+          "name": "motivo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "devolucion_proveedor_id_compra_fkey": {
+          "name": "devolucion_proveedor_id_compra_fkey",
+          "tableFrom": "devolucion_proveedor",
+          "tableTo": "compra",
+          "columnsFrom": [
+            "id_compra"
+          ],
+          "columnsTo": [
+            "id_compra"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_proveedor_id_empleado_fkey": {
+          "name": "devolucion_proveedor_id_empleado_fkey",
+          "tableFrom": "devolucion_proveedor",
+          "tableTo": "empleado",
+          "columnsFrom": [
+            "id_empleado"
+          ],
+          "columnsTo": [
+            "id_empleado"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.devolucion_proveedor_detalle": {
+      "name": "devolucion_proveedor_detalle",
+      "schema": "",
+      "columns": {
+        "id_detalle_dev_prov": {
+          "name": "id_detalle_dev_prov",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_devolucion_prov": {
+          "name": "id_devolucion_prov",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_compra_detalle": {
+          "name": "id_compra_detalle",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_producto": {
+          "name": "id_producto",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cantidad": {
+          "name": "cantidad",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "costo_unitario": {
+          "name": "costo_unitario",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "devolucion_proveedor_detalle_id_devolucion_prov_fkey": {
+          "name": "devolucion_proveedor_detalle_id_devolucion_prov_fkey",
+          "tableFrom": "devolucion_proveedor_detalle",
+          "tableTo": "devolucion_proveedor",
+          "columnsFrom": [
+            "id_devolucion_prov"
+          ],
+          "columnsTo": [
+            "id_devolucion_prov"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_proveedor_detalle_id_compra_detalle_fkey": {
+          "name": "devolucion_proveedor_detalle_id_compra_detalle_fkey",
+          "tableFrom": "devolucion_proveedor_detalle",
+          "tableTo": "compra_detalle",
+          "columnsFrom": [
+            "id_compra_detalle"
+          ],
+          "columnsTo": [
+            "id_lote"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "devolucion_proveedor_detalle_id_producto_fkey": {
+          "name": "devolucion_proveedor_detalle_id_producto_fkey",
+          "tableFrom": "devolucion_proveedor_detalle",
+          "tableTo": "producto",
+          "columnsFrom": [
+            "id_producto"
+          ],
+          "columnsTo": [
+            "id_producto"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.empleado": {
@@ -149,10 +1254,10 @@
           "columns": [
             {
               "expression": "documento_identidad",
+              "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
+              "opclass": "text_ops"
             }
           ],
           "isUnique": false,
@@ -166,7 +1271,6 @@
           "name": "empleado_id_sucursal_fkey",
           "tableFrom": "empleado",
           "tableTo": "sucursal",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_sucursal"
           ],
@@ -180,981 +1284,22 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "empleado_documento_identidad_key": {
+          "name": "empleado_documento_identidad_key",
+          "nullsNotDistinct": false,
           "columns": [
             "documento_identidad"
-          ],
-          "nullsNotDistinct": false,
-          "name": "empleado_documento_identidad_key"
+          ]
         },
         "empleado_email_key": {
+          "name": "empleado_email_key",
+          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ],
-          "nullsNotDistinct": false,
-          "name": "empleado_email_key"
+          ]
         }
       },
-      "checkConstraints": {},
       "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.bodega": {
-      "name": "bodega",
-      "schema": "",
-      "columns": {
-        "id_bodega": {
-          "name": "id_bodega",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "nombre": {
-          "name": "nombre",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "descripcion": {
-          "name": "descripcion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_sucursal": {
-          "name": "id_sucursal",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "es_principal": {
-          "name": "es_principal",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "estado": {
-          "name": "estado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'activo'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "bodega_id_sucursal_fkey": {
-          "name": "bodega_id_sucursal_fkey",
-          "tableFrom": "bodega",
-          "tableTo": "sucursal",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_sucursal"
-          ],
-          "columnsTo": [
-            "id_sucursal"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
       "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.producto": {
-      "name": "producto",
-      "schema": "",
-      "columns": {
-        "id_producto": {
-          "name": "id_producto",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "codigo": {
-          "name": "codigo",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "nombre": {
-          "name": "nombre",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "descripcion": {
-          "name": "descripcion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "categoria": {
-          "name": "categoria",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "subcategoria": {
-          "name": "subcategoria",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "precio": {
-          "name": "precio",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "costo_promedio": {
-          "name": "costo_promedio",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "impuesto": {
-          "name": "impuesto",
-          "type": "numeric(5, 2)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'0'"
-        },
-        "unidad_medida": {
-          "name": "unidad_medida",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'Unidad'"
-        },
-        "imagen_url": {
-          "name": "imagen_url",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "estado": {
-          "name": "estado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'activo'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "idx_producto_codigo": {
-          "name": "idx_producto_codigo",
-          "columns": [
-            {
-              "expression": "codigo",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_producto_nombre": {
-          "name": "idx_producto_nombre",
-          "columns": [
-            {
-              "expression": "nombre",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "producto_codigo_key": {
-          "columns": [
-            "codigo"
-          ],
-          "nullsNotDistinct": false,
-          "name": "producto_codigo_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.stock": {
-      "name": "stock",
-      "schema": "",
-      "columns": {
-        "id_stock": {
-          "name": "id_stock",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id_producto": {
-          "name": "id_producto",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_bodega": {
-          "name": "id_bodega",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "cantidad": {
-          "name": "cantidad",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "idx_stock_producto": {
-          "name": "idx_stock_producto",
-          "columns": [
-            {
-              "expression": "id_producto",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "stock_id_producto_fkey": {
-          "name": "stock_id_producto_fkey",
-          "tableFrom": "stock",
-          "tableTo": "producto",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_producto"
-          ],
-          "columnsTo": [
-            "id_producto"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "stock_id_bodega_fkey": {
-          "name": "stock_id_bodega_fkey",
-          "tableFrom": "stock",
-          "tableTo": "bodega",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_bodega"
-          ],
-          "columnsTo": [
-            "id_bodega"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "stock_id_producto_id_bodega_key": {
-          "columns": [
-            "id_producto",
-            "id_bodega"
-          ],
-          "nullsNotDistinct": false,
-          "name": "stock_id_producto_id_bodega_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.proveedor": {
-      "name": "proveedor",
-      "schema": "",
-      "columns": {
-        "id_proveedor": {
-          "name": "id_proveedor",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "nombre": {
-          "name": "nombre",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "documento_identidad": {
-          "name": "documento_identidad",
-          "type": "varchar(30)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "contacto": {
-          "name": "contacto",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "telefono": {
-          "name": "telefono",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "direccion": {
-          "name": "direccion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "estado": {
-          "name": "estado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'activo'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "proveedor_documento_identidad_key": {
-          "columns": [
-            "documento_identidad"
-          ],
-          "nullsNotDistinct": false,
-          "name": "proveedor_documento_identidad_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.compra": {
-      "name": "compra",
-      "schema": "",
-      "columns": {
-        "id_compra": {
-          "name": "id_compra",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id_proveedor": {
-          "name": "id_proveedor",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_empleado": {
-          "name": "id_empleado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fecha": {
-          "name": "fecha",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "numero_factura": {
-          "name": "numero_factura",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "total": {
-          "name": "total",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "estado": {
-          "name": "estado",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "observaciones": {
-          "name": "observaciones",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "idx_compra_fecha": {
-          "name": "idx_compra_fecha",
-          "columns": [
-            {
-              "expression": "fecha",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "date_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "compra_id_proveedor_fkey": {
-          "name": "compra_id_proveedor_fkey",
-          "tableFrom": "compra",
-          "tableTo": "proveedor",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_proveedor"
-          ],
-          "columnsTo": [
-            "id_proveedor"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "compra_id_empleado_fkey": {
-          "name": "compra_id_empleado_fkey",
-          "tableFrom": "compra",
-          "tableTo": "empleado",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_empleado"
-          ],
-          "columnsTo": [
-            "id_empleado"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.compra_detalle": {
-      "name": "compra_detalle",
-      "schema": "",
-      "columns": {
-        "id_lote": {
-          "name": "id_lote",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id_compra": {
-          "name": "id_compra",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_producto": {
-          "name": "id_producto",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_bodega": {
-          "name": "id_bodega",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "cantidad": {
-          "name": "cantidad",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "cantidad_disponible": {
-          "name": "cantidad_disponible",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "costo_unitario": {
-          "name": "costo_unitario",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "fecha_caducidad": {
-          "name": "fecha_caducidad",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fecha_recepcion": {
-          "name": "fecha_recepcion",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "idx_compra_detalle_producto": {
-          "name": "idx_compra_detalle_producto",
-          "columns": [
-            {
-              "expression": "id_producto",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "compra_detalle_id_compra_fkey": {
-          "name": "compra_detalle_id_compra_fkey",
-          "tableFrom": "compra_detalle",
-          "tableTo": "compra",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_compra"
-          ],
-          "columnsTo": [
-            "id_compra"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "compra_detalle_id_producto_fkey": {
-          "name": "compra_detalle_id_producto_fkey",
-          "tableFrom": "compra_detalle",
-          "tableTo": "producto",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_producto"
-          ],
-          "columnsTo": [
-            "id_producto"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "compra_detalle_id_bodega_fkey": {
-          "name": "compra_detalle_id_bodega_fkey",
-          "tableFrom": "compra_detalle",
-          "tableTo": "bodega",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_bodega"
-          ],
-          "columnsTo": [
-            "id_bodega"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.movimiento_bodega": {
-      "name": "movimiento_bodega",
-      "schema": "",
-      "columns": {
-        "id_movimiento": {
-          "name": "id_movimiento",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id_producto": {
-          "name": "id_producto",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_lote": {
-          "name": "id_lote",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_bodega_origen": {
-          "name": "id_bodega_origen",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_bodega_destino": {
-          "name": "id_bodega_destino",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "cantidad": {
-          "name": "cantidad",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "fecha": {
-          "name": "fecha",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "id_empleado": {
-          "name": "id_empleado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "motivo": {
-          "name": "motivo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "movimiento_bodega_id_producto_fkey": {
-          "name": "movimiento_bodega_id_producto_fkey",
-          "tableFrom": "movimiento_bodega",
-          "tableTo": "producto",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_producto"
-          ],
-          "columnsTo": [
-            "id_producto"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "movimiento_bodega_id_lote_fkey": {
-          "name": "movimiento_bodega_id_lote_fkey",
-          "tableFrom": "movimiento_bodega",
-          "tableTo": "compra_detalle",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_lote"
-          ],
-          "columnsTo": [
-            "id_lote"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "movimiento_bodega_id_bodega_origen_fkey": {
-          "name": "movimiento_bodega_id_bodega_origen_fkey",
-          "tableFrom": "movimiento_bodega",
-          "tableTo": "bodega",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_bodega_origen"
-          ],
-          "columnsTo": [
-            "id_bodega"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "movimiento_bodega_id_bodega_destino_fkey": {
-          "name": "movimiento_bodega_id_bodega_destino_fkey",
-          "tableFrom": "movimiento_bodega",
-          "tableTo": "bodega",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_bodega_destino"
-          ],
-          "columnsTo": [
-            "id_bodega"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "movimiento_bodega_id_empleado_fkey": {
-          "name": "movimiento_bodega_id_empleado_fkey",
-          "tableFrom": "movimiento_bodega",
-          "tableTo": "empleado",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_empleado"
-          ],
-          "columnsTo": [
-            "id_empleado"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.cliente": {
-      "name": "cliente",
-      "schema": "",
-      "columns": {
-        "id_cliente": {
-          "name": "id_cliente",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "nombre": {
-          "name": "nombre",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "apellido": {
-          "name": "apellido",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "documento_identidad": {
-          "name": "documento_identidad",
-          "type": "varchar(30)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "telefono": {
-          "name": "telefono",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "direccion": {
-          "name": "direccion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fecha_registro": {
-          "name": "fecha_registro",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_DATE"
-        },
-        "estado": {
-          "name": "estado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'activo'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "idx_cliente_documento": {
-          "name": "idx_cliente_documento",
-          "columns": [
-            {
-              "expression": "documento_identidad",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_cliente_email": {
-          "name": "idx_cliente_email",
-          "columns": [
-            {
-              "expression": "email",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "cliente_documento_identidad_key": {
-          "columns": [
-            "documento_identidad"
-          ],
-          "nullsNotDistinct": false,
-          "name": "cliente_documento_identidad_key"
-        },
-        "cliente_email_key": {
-          "columns": [
-            "email"
-          ],
-          "nullsNotDistinct": false,
-          "name": "cliente_email_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {},
       "isRLSEnabled": false
     },
     "public.factura": {
@@ -1263,10 +1408,10 @@
           "columns": [
             {
               "expression": "id_cliente",
+              "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
+              "opclass": "text_ops"
             }
           ],
           "isUnique": false,
@@ -1279,10 +1424,10 @@
           "columns": [
             {
               "expression": "fecha",
+              "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "timestamp_ops",
-              "isExpression": false
+              "opclass": "timestamp_ops"
             }
           ],
           "isUnique": false,
@@ -1295,10 +1440,10 @@
           "columns": [
             {
               "expression": "id_sucursal",
+              "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
+              "opclass": "text_ops"
             }
           ],
           "isUnique": false,
@@ -1312,7 +1457,6 @@
           "name": "factura_id_cliente_fkey",
           "tableFrom": "factura",
           "tableTo": "cliente",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_cliente"
           ],
@@ -1326,7 +1470,6 @@
           "name": "factura_id_empleado_fkey",
           "tableFrom": "factura",
           "tableTo": "empleado",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_empleado"
           ],
@@ -1340,7 +1483,6 @@
           "name": "factura_id_sucursal_fkey",
           "tableFrom": "factura",
           "tableTo": "sucursal",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_sucursal"
           ],
@@ -1354,15 +1496,15 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "factura_numero_factura_key": {
+          "name": "factura_numero_factura_key",
+          "nullsNotDistinct": false,
           "columns": [
             "numero_factura"
-          ],
-          "nullsNotDistinct": false,
-          "name": "factura_numero_factura_key"
+          ]
         }
       },
-      "checkConstraints": {},
       "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.factura_detalle": {
@@ -1446,10 +1588,10 @@
           "columns": [
             {
               "expression": "id_producto",
+              "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "text_ops",
-              "isExpression": false
+              "opclass": "text_ops"
             }
           ],
           "isUnique": false,
@@ -1463,7 +1605,6 @@
           "name": "factura_detalle_id_factura_fkey",
           "tableFrom": "factura_detalle",
           "tableTo": "factura",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_factura"
           ],
@@ -1477,7 +1618,6 @@
           "name": "factura_detalle_id_producto_fkey",
           "tableFrom": "factura_detalle",
           "tableTo": "producto",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_producto"
           ],
@@ -1491,7 +1631,6 @@
           "name": "factura_detalle_id_lote_fkey",
           "tableFrom": "factura_detalle",
           "tableTo": "compra_detalle",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_lote"
           ],
@@ -1504,130 +1643,19 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {},
       "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.devolucion": {
-      "name": "devolucion",
+    "public.movimiento_bodega": {
+      "name": "movimiento_bodega",
       "schema": "",
       "columns": {
-        "id_devolucion": {
-          "name": "id_devolucion",
+        "id_movimiento": {
+          "name": "id_movimiento",
           "type": "varchar(50)",
           "primaryKey": true,
           "notNull": true
-        },
-        "id_factura": {
-          "name": "id_factura",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_empleado": {
-          "name": "id_empleado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fecha": {
-          "name": "fecha",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "total": {
-          "name": "total",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "motivo": {
-          "name": "motivo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "estado": {
-          "name": "estado",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "devolucion_id_factura_fkey": {
-          "name": "devolucion_id_factura_fkey",
-          "tableFrom": "devolucion",
-          "tableTo": "factura",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_factura"
-          ],
-          "columnsTo": [
-            "id_factura"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "devolucion_id_empleado_fkey": {
-          "name": "devolucion_id_empleado_fkey",
-          "tableFrom": "devolucion",
-          "tableTo": "empleado",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_empleado"
-          ],
-          "columnsTo": [
-            "id_empleado"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.devolucion_detalle": {
-      "name": "devolucion_detalle",
-      "schema": "",
-      "columns": {
-        "id_detalle_dev": {
-          "name": "id_detalle_dev",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id_devolucion": {
-          "name": "id_devolucion",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_factura_detalle": {
-          "name": "id_factura_detalle",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
         },
         "id_producto": {
           "name": "id_producto",
@@ -1641,23 +1669,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "cantidad": {
-          "name": "cantidad",
-          "type": "integer",
+        "id_bodega_origen": {
+          "name": "id_bodega_origen",
+          "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": true
-        },
-        "precio_unitario": {
-          "name": "precio_unitario",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "subtotal": {
-          "name": "subtotal",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "id_bodega_destino": {
           "name": "id_bodega_destino",
@@ -1665,121 +1681,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "cantidad": {
+          "name": "cantidad",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "devolucion_detalle_id_devolucion_fkey": {
-          "name": "devolucion_detalle_id_devolucion_fkey",
-          "tableFrom": "devolucion_detalle",
-          "tableTo": "devolucion",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_devolucion"
-          ],
-          "columnsTo": [
-            "id_devolucion"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "devolucion_detalle_id_factura_detalle_fkey": {
-          "name": "devolucion_detalle_id_factura_detalle_fkey",
-          "tableFrom": "devolucion_detalle",
-          "tableTo": "factura_detalle",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_factura_detalle"
-          ],
-          "columnsTo": [
-            "id_detalle"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "devolucion_detalle_id_producto_fkey": {
-          "name": "devolucion_detalle_id_producto_fkey",
-          "tableFrom": "devolucion_detalle",
-          "tableTo": "producto",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_producto"
-          ],
-          "columnsTo": [
-            "id_producto"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "devolucion_detalle_id_lote_fkey": {
-          "name": "devolucion_detalle_id_lote_fkey",
-          "tableFrom": "devolucion_detalle",
-          "tableTo": "compra_detalle",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_lote"
-          ],
-          "columnsTo": [
-            "id_lote"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "devolucion_detalle_id_bodega_destino_fkey": {
-          "name": "devolucion_detalle_id_bodega_destino_fkey",
-          "tableFrom": "devolucion_detalle",
-          "tableTo": "bodega",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_bodega_destino"
-          ],
-          "columnsTo": [
-            "id_bodega"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.devolucion_proveedor": {
-      "name": "devolucion_proveedor",
-      "schema": "",
-      "columns": {
-        "id_devolucion_prov": {
-          "name": "id_devolucion_prov",
-          "type": "varchar(50)",
-          "primaryKey": true,
           "notNull": true
-        },
-        "id_compra": {
-          "name": "id_compra",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_empleado": {
-          "name": "id_empleado",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
         },
         "fecha": {
           "name": "fecha",
@@ -1788,11 +1694,11 @@
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "total": {
-          "name": "total",
-          "type": "numeric(10, 2)",
+        "id_empleado": {
+          "name": "id_empleado",
+          "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "motivo": {
           "name": "motivo",
@@ -1800,12 +1706,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "estado": {
-          "name": "estado",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1823,125 +1723,25 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "devolucion_proveedor_id_compra_fkey": {
-          "name": "devolucion_proveedor_id_compra_fkey",
-          "tableFrom": "devolucion_proveedor",
-          "tableTo": "compra",
-          "schemaTo": "public",
+        "movimiento_bodega_id_producto_fkey": {
+          "name": "movimiento_bodega_id_producto_fkey",
+          "tableFrom": "movimiento_bodega",
+          "tableTo": "producto",
           "columnsFrom": [
-            "id_compra"
+            "id_producto"
           ],
           "columnsTo": [
-            "id_compra"
+            "id_producto"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "devolucion_proveedor_id_empleado_fkey": {
-          "name": "devolucion_proveedor_id_empleado_fkey",
-          "tableFrom": "devolucion_proveedor",
-          "tableTo": "empleado",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_empleado"
-          ],
-          "columnsTo": [
-            "id_empleado"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.devolucion_proveedor_detalle": {
-      "name": "devolucion_proveedor_detalle",
-      "schema": "",
-      "columns": {
-        "id_detalle_dev_prov": {
-          "name": "id_detalle_dev_prov",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id_devolucion_prov": {
-          "name": "id_devolucion_prov",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_compra_detalle": {
-          "name": "id_compra_detalle",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_producto": {
-          "name": "id_producto",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "cantidad": {
-          "name": "cantidad",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "costo_unitario": {
-          "name": "costo_unitario",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "subtotal": {
-          "name": "subtotal",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "devolucion_proveedor_detalle_id_devolucion_prov_fkey": {
-          "name": "devolucion_proveedor_detalle_id_devolucion_prov_fkey",
-          "tableFrom": "devolucion_proveedor_detalle",
-          "tableTo": "devolucion_proveedor",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_devolucion_prov"
-          ],
-          "columnsTo": [
-            "id_devolucion_prov"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "devolucion_proveedor_detalle_id_compra_detalle_fkey": {
-          "name": "devolucion_proveedor_detalle_id_compra_detalle_fkey",
-          "tableFrom": "devolucion_proveedor_detalle",
+        "movimiento_bodega_id_lote_fkey": {
+          "name": "movimiento_bodega_id_lote_fkey",
+          "tableFrom": "movimiento_bodega",
           "tableTo": "compra_detalle",
-          "schemaTo": "public",
           "columnsFrom": [
-            "id_compra_detalle"
+            "id_lote"
           ],
           "columnsTo": [
             "id_lote"
@@ -1949,16 +1749,41 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "devolucion_proveedor_detalle_id_producto_fkey": {
-          "name": "devolucion_proveedor_detalle_id_producto_fkey",
-          "tableFrom": "devolucion_proveedor_detalle",
-          "tableTo": "producto",
-          "schemaTo": "public",
+        "movimiento_bodega_id_bodega_origen_fkey": {
+          "name": "movimiento_bodega_id_bodega_origen_fkey",
+          "tableFrom": "movimiento_bodega",
+          "tableTo": "bodega",
           "columnsFrom": [
-            "id_producto"
+            "id_bodega_origen"
           ],
           "columnsTo": [
-            "id_producto"
+            "id_bodega"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "movimiento_bodega_id_bodega_destino_fkey": {
+          "name": "movimiento_bodega_id_bodega_destino_fkey",
+          "tableFrom": "movimiento_bodega",
+          "tableTo": "bodega",
+          "columnsFrom": [
+            "id_bodega_destino"
+          ],
+          "columnsTo": [
+            "id_bodega"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "movimiento_bodega_id_empleado_fkey": {
+          "name": "movimiento_bodega_id_empleado_fkey",
+          "tableFrom": "movimiento_bodega",
+          "tableTo": "empleado",
+          "columnsFrom": [
+            "id_empleado"
+          ],
+          "columnsTo": [
+            "id_empleado"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1966,8 +1791,196 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {},
       "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.permiso": {
+      "name": "permiso",
+      "schema": "",
+      "columns": {
+        "id_permiso": {
+          "name": "id_permiso",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.producto": {
+      "name": "producto",
+      "schema": "",
+      "columns": {
+        "id_producto": {
+          "name": "id_producto",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "categoria": {
+          "name": "categoria",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "subcategoria": {
+          "name": "subcategoria",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "precio": {
+          "name": "precio",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "costo_promedio": {
+          "name": "costo_promedio",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "impuesto": {
+          "name": "impuesto",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "unidad_medida": {
+          "name": "unidad_medida",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Unidad'"
+        },
+        "imagen_url": {
+          "name": "imagen_url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'activo'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_producto_codigo": {
+          "name": "idx_producto_codigo",
+          "columns": [
+            {
+              "expression": "codigo",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_producto_nombre": {
+          "name": "idx_producto_nombre",
+          "columns": [
+            {
+              "expression": "nombre",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "producto_codigo_key": {
+          "name": "producto_codigo_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "codigo"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.promocion": {
@@ -2042,8 +2055,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {},
       "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.promocion_producto": {
@@ -2089,7 +2102,6 @@
           "name": "promocion_producto_id_promocion_fkey",
           "tableFrom": "promocion_producto",
           "tableTo": "promocion",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_promocion"
           ],
@@ -2103,7 +2115,6 @@
           "name": "promocion_producto_id_producto_fkey",
           "tableFrom": "promocion_producto",
           "tableTo": "producto",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_producto"
           ],
@@ -2117,85 +2128,121 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "promocion_producto_id_promocion_id_producto_key": {
+          "name": "promocion_producto_id_promocion_id_producto_key",
+          "nullsNotDistinct": false,
           "columns": [
             "id_promocion",
             "id_producto"
-          ],
-          "nullsNotDistinct": false,
-          "name": "promocion_producto_id_promocion_id_producto_key"
+          ]
         }
       },
-      "checkConstraints": {},
       "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.caja": {
-      "name": "caja",
+    "public.proveedor": {
+      "name": "proveedor",
       "schema": "",
       "columns": {
-        "id_caja": {
-          "name": "id_caja",
+        "id_proveedor": {
+          "name": "id_proveedor",
           "type": "varchar(50)",
           "primaryKey": true,
           "notNull": true
         },
         "nombre": {
           "name": "nombre",
-          "type": "varchar(50)",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
         },
-        "id_sucursal": {
-          "name": "id_sucursal",
-          "type": "varchar(50)",
+        "documento_identidad": {
+          "name": "documento_identidad",
+          "type": "varchar(30)",
           "primaryKey": false,
           "notNull": false
         },
-        "fecha_apertura": {
-          "name": "fecha_apertura",
-          "type": "timestamp",
+        "contacto": {
+          "name": "contacto",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false
         },
-        "fecha_cierre": {
-          "name": "fecha_cierre",
-          "type": "timestamp",
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(20)",
           "primaryKey": false,
           "notNull": false
         },
-        "id_empleado_apertura": {
-          "name": "id_empleado_apertura",
-          "type": "varchar(50)",
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false
         },
-        "id_empleado_cierre": {
-          "name": "id_empleado_cierre",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "saldo_inicial": {
-          "name": "saldo_inicial",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "saldo_final": {
-          "name": "saldo_final",
-          "type": "numeric(10, 2)",
+        "direccion": {
+          "name": "direccion",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
         "estado": {
           "name": "estado",
-          "type": "varchar(20)",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'activo'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "proveedor_documento_identidad_key": {
+          "name": "proveedor_documento_identidad_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "documento_identidad"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.rol_permiso": {
+      "name": "rol_permiso",
+      "schema": "",
+      "columns": {
+        "id_rol_permiso": {
+          "name": "id_rol_permiso",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "rol": {
+          "name": "rol",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false
         },
-        "observaciones": {
-          "name": "observaciones",
-          "type": "text",
+        "id_permiso": {
+          "name": "id_permiso",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false
         },
@@ -2216,53 +2263,195 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "caja_id_sucursal_fkey": {
-          "name": "caja_id_sucursal_fkey",
-          "tableFrom": "caja",
-          "tableTo": "sucursal",
-          "schemaTo": "public",
+        "rol_permiso_id_permiso_fkey": {
+          "name": "rol_permiso_id_permiso_fkey",
+          "tableFrom": "rol_permiso",
+          "tableTo": "permiso",
           "columnsFrom": [
-            "id_sucursal"
+            "id_permiso"
           ],
           "columnsTo": [
-            "id_sucursal"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "caja_id_empleado_apertura_fkey": {
-          "name": "caja_id_empleado_apertura_fkey",
-          "tableFrom": "caja",
-          "tableTo": "empleado",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_empleado_apertura"
-          ],
-          "columnsTo": [
-            "id_empleado"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "caja_id_empleado_cierre_fkey": {
-          "name": "caja_id_empleado_cierre_fkey",
-          "tableFrom": "caja",
-          "tableTo": "empleado",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_empleado_cierre"
-          ],
-          "columnsTo": [
-            "id_empleado"
+            "id_permiso"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
+      "uniqueConstraints": {
+        "rol_permiso_rol_id_permiso_key": {
+          "name": "rol_permiso_rol_id_permiso_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "rol",
+            "id_permiso"
+          ]
+        }
+      },
       "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.stock": {
+      "name": "stock",
+      "schema": "",
+      "columns": {
+        "id_stock": {
+          "name": "id_stock",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "id_producto": {
+          "name": "id_producto",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_bodega": {
+          "name": "id_bodega",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cantidad": {
+          "name": "cantidad",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_stock_producto": {
+          "name": "idx_stock_producto",
+          "columns": [
+            {
+              "expression": "id_producto",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "stock_id_producto_fkey": {
+          "name": "stock_id_producto_fkey",
+          "tableFrom": "stock",
+          "tableTo": "producto",
+          "columnsFrom": [
+            "id_producto"
+          ],
+          "columnsTo": [
+            "id_producto"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "stock_id_bodega_fkey": {
+          "name": "stock_id_bodega_fkey",
+          "tableFrom": "stock",
+          "tableTo": "bodega",
+          "columnsFrom": [
+            "id_bodega"
+          ],
+          "columnsTo": [
+            "id_bodega"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "stock_id_producto_id_bodega_key": {
+          "name": "stock_id_producto_id_bodega_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id_producto",
+            "id_bodega"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sucursal": {
+      "name": "sucursal",
+      "schema": "",
+      "columns": {
+        "id_sucursal": {
+          "name": "id_sucursal",
+          "type": "varchar(50)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "direccion": {
+          "name": "direccion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'activo'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.transaccion_caja": {
@@ -2345,7 +2534,6 @@
           "name": "transaccion_caja_id_caja_fkey",
           "tableFrom": "transaccion_caja",
           "tableTo": "caja",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_caja"
           ],
@@ -2359,7 +2547,6 @@
           "name": "transaccion_caja_id_empleado_fkey",
           "tableFrom": "transaccion_caja",
           "tableTo": "empleado",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_empleado"
           ],
@@ -2373,7 +2560,6 @@
           "name": "transaccion_caja_id_factura_fkey",
           "tableFrom": "transaccion_caja",
           "tableTo": "factura",
-          "schemaTo": "public",
           "columnsFrom": [
             "id_factura"
           ],
@@ -2386,236 +2572,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {},
       "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.permiso": {
-      "name": "permiso",
-      "schema": "",
-      "columns": {
-        "id_permiso": {
-          "name": "id_permiso",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "nombre": {
-          "name": "nombre",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "descripcion": {
-          "name": "descripcion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
       "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.rol_permiso": {
-      "name": "rol_permiso",
-      "schema": "",
-      "columns": {
-        "id_rol_permiso": {
-          "name": "id_rol_permiso",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "rol": {
-          "name": "rol",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_permiso": {
-          "name": "id_permiso",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "rol_permiso_id_permiso_fkey": {
-          "name": "rol_permiso_id_permiso_fkey",
-          "tableFrom": "rol_permiso",
-          "tableTo": "permiso",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_permiso"
-          ],
-          "columnsTo": [
-            "id_permiso"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "rol_permiso_rol_id_permiso_key": {
-          "columns": [
-            "rol",
-            "id_permiso"
-          ],
-          "nullsNotDistinct": false,
-          "name": "rol_permiso_rol_id_permiso_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.auditoria": {
-      "name": "auditoria",
-      "schema": "",
-      "columns": {
-        "id_auditoria": {
-          "name": "id_auditoria",
-          "type": "varchar(50)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "id_usuario": {
-          "name": "id_usuario",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "accion": {
-          "name": "accion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "tabla_afectada": {
-          "name": "tabla_afectada",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_registro": {
-          "name": "id_registro",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "valor_anterior": {
-          "name": "valor_anterior",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "valor_nuevo": {
-          "name": "valor_nuevo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "fecha": {
-          "name": "fecha",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "ip_address": {
-          "name": "ip_address",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "idx_auditoria_fecha": {
-          "name": "idx_auditoria_fecha",
-          "columns": [
-            {
-              "expression": "fecha",
-              "asc": true,
-              "nulls": "last",
-              "opclass": "timestamp_ops",
-              "isExpression": false
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "auditoria_id_usuario_fkey": {
-          "name": "auditoria_id_usuario_fkey",
-          "tableFrom": "auditoria",
-          "tableTo": "empleado",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "id_usuario"
-          ],
-          "columnsTo": [
-            "id_empleado"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
       "isRLSEnabled": false
     }
   },
@@ -2626,11 +2584,8 @@
   "policies": {},
   "views": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "internal": {
     "tables": {}
   }
 }

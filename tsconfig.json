@@ -6,8 +6,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
-    // "target": "es2022", //Para ejecutar npx drizzle-kit 
+    // "target": "ES2023",
+    "target": "es2022", //Para ejecutar npx drizzle-kit 
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSucursalDto } from './dto/sucursal.dto';
-import { UpdateSucursalDto } from './dto/update-sucursal.dto';
+// import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { SucursalRepository } from './sucursal.repository';
 
 @Injectable()

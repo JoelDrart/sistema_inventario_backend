@@ -1,7 +1,42 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
+import { User } from '../../users/entity/user.entity';
 
 export class RegisterAuthDto {
+  @IsString({ message: 'El nombre debe ser texto' })
+  @IsNotEmpty({ message: 'El nombre es requerido' })
+  nombre: string;
+
+  @IsString({ message: 'El apellido debe ser texto' })
+  @IsNotEmpty({ message: 'El apellido es requerido' })
+  apellido: string;
+
+  @Matches(/^\d{10}$/, {
+    message: 'El Documento de Identidad debe contener exactamente 10 números',
+  })
+  @IsString({ message: 'El Documento de Identidad debe ser texto' })
+  @IsNotEmpty({ message: 'El Documento de Identidad es requerido' })
+  dni: string;
+
+  @IsOptional()
+  @IsDateString({}, { message: 'La fecha debe ser una fecha válida' })
+  fechaContratacion: Date | string | null = null;
+
+  @IsOptional()
+  @IsString({ message: 'El rol debe ser texto' })
+  rol: string | null = null;
+
+  @IsOptional()
+  @IsString({ message: 'El ID de sucursal debe ser texto' })
+  idSucursal: string | null = null;
+
   @IsEmail({}, { message: 'El correo electrónico no es válido' })
   @IsNotEmpty({ message: 'El correo electrónico es requerido' })
   email: string;
@@ -24,4 +59,10 @@ export class LoginAuthDto {
 
 export class AccessTokenDto {
   accessToken: string;
+}
+
+export class RegisterResponseDto {
+  status: string;
+  message: string;
+  data: User | null;
 }

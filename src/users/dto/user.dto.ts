@@ -6,6 +6,7 @@ import {
   Min,
   Length,
   IsIn,
+  Matches,
 } from 'class-validator';
 import { User } from '../entity/user.entity';
 import { PaginationMeta } from '../../dto';
@@ -54,6 +55,19 @@ export class CreateUserDto {
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
 
+export class AssignUserSucursalDto {
+  @IsString({ message: 'El ID de usuario debe ser texto' })
+  @IsNotEmpty({ message: 'El ID de usuario es requerido' })
+  userId: string;
+
+  @Matches(/^suc\d{3}$/, {
+    message:
+      'El ID de sucursal debe tener el formato "suc" seguido de 3 dígitos (ej. suc001)',
+  })
+  @IsString({ message: 'El ID de sucursal debe ser texto' })
+  @IsNotEmpty({ message: 'El ID de sucursal es requerido' })
+  sucursalId: string;
+}
 export class UserResponseDto {
   status: string;
   data: User | null | User[];

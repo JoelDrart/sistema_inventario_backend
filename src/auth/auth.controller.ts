@@ -1,6 +1,6 @@
 import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterAuthDto } from './dto';
+import { AccessTokenDto, LoginAuthDto, RegisterAuthDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,8 +14,8 @@ export class AuthController {
   }
 
   @Post('login')
-  signIn(@Body() createAuthDto: RegisterAuthDto) {
-    return `Vamos a loguearte con ${createAuthDto.email} y ${createAuthDto.password}`;
-    // return this.authService.create(createAuthDto);
+  @HttpCode(200)
+  signIn(@Body() loginUser: LoginAuthDto): Promise<AccessTokenDto> {
+    return this.authService.signIn(loginUser);
   }
 }

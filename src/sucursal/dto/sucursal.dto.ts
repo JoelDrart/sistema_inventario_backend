@@ -6,6 +6,17 @@ import {
   MinLength,
 } from 'class-validator';
 import { Sucursal } from '../entities';
+import { PartialType } from '@nestjs/mapped-types';
+import { PaginationMeta } from '../../dto';
+
+export class SucursalIdDto {
+  @IsString({ message: 'El ID de sucursal debe ser un string' })
+  @Matches(/^suc\d{3}$/, {
+    message:
+      'El ID de sucursal debe tener el formato "suc" seguido de 3 dígitos (ej. suc001)',
+  })
+  id: string;
+}
 
 export class CreateSucursalDto {
   @MaxLength(50, { message: 'El nombre no debe exceder los 50 caracteres' })
@@ -30,7 +41,11 @@ export class CreateSucursalDto {
   telefono: string;
 }
 
-export class CreateSucursalResponseDto {
+export class UpdateSucursalDto extends PartialType(CreateSucursalDto) {}
+
+export class SucursalResponseDto {
   status: string;
-  data: Sucursal;
+  data: Sucursal | null | Sucursal[];
+  pagination?: PaginationMeta | null;
+  message?: string;
 }

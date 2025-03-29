@@ -3,12 +3,14 @@ import {
   Get,
   Post,
   Body,
-  //Patch,
+  Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SucursalService } from './sucursal.service';
-import { CreateSucursalDto } from './dto';
+import { CreateSucursalDto, SucursalIdDto, UpdateSucursalDto } from './dto';
+import { PagePaginationDto } from '../dto';
 
 @Controller('sucursal')
 export class SucursalController {
@@ -20,25 +22,25 @@ export class SucursalController {
   }
 
   @Get()
-  findAll() {
-    return this.sucursalService.findAll();
+  findAll(@Query() query: PagePaginationDto) {
+    return this.sucursalService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.sucursalService.findOne(+id);
+  findOne(@Param() { id }: SucursalIdDto) {
+    return this.sucursalService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateSucursalDto: UpdateSucursalDto,
-  // ) {
-  //   return this.sucursalService.update(+id, updateSucursalDto);
-  // }
+  @Patch(':id')
+  update(
+    @Param() { id }: SucursalIdDto,
+    @Body() updateSucursalDto: UpdateSucursalDto,
+  ) {
+    return this.sucursalService.update(id, updateSucursalDto);
+  }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.sucursalService.remove(+id);
+  remove(@Param() { id }: SucursalIdDto) {
+    return this.sucursalService.remove(id);
   }
 }

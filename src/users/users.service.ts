@@ -3,7 +3,7 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { schema } from '../db/index';
 import { DrizzleAsyncProvider } from 'src/drizzle/drizzle.provider';
 import { eq } from 'drizzle-orm';
-import { UserResponse } from './dto';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +12,7 @@ export class UsersService {
     private db: NodePgDatabase<typeof schema>,
   ) {}
 
-  async findUserByEmail(email: string): Promise<UserResponse | null> {
+  async findUserByEmail(email: string): Promise<User | null> {
     const [user] = await this.db
       .select({
         id: schema.empleado.idEmpleado,
@@ -33,17 +33,15 @@ export class UsersService {
     return {
       id: user.id,
       email: user.email,
-      name: {
-        first: user.firstName,
-        last: user.lastName,
-      },
+      name: user.firstName,
+      apellido: user.lastName,
       dni: user.dni,
       rol: user.rol ?? '',
-      state: user.state ?? '',
+      estado: user.state ?? '',
     };
   }
 
-  async findUserById(id: string): Promise<UserResponse | null> {
+  async findUserById(id: string): Promise<User | null> {
     const [user] = await this.db
       .select({
         id: schema.empleado.idEmpleado,
@@ -64,13 +62,11 @@ export class UsersService {
     return {
       id: user.id,
       email: user.email,
-      name: {
-        first: user.firstName,
-        last: user.lastName,
-      },
+      name: user.firstName,
+      apellido: user.lastName,
       dni: user.dni,
       rol: user.rol ?? '',
-      state: user.state ?? '',
+      estado: user.state ?? '',
     };
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSucursalDto } from './dto/sucursal.dto';
-// import { UpdateSucursalDto } from './dto/update-sucursal.dto';
+import { CreateSucursalDto, UpdateSucursalDto } from './dto/sucursal.dto';
 import { SucursalRepository } from './sucursal.repository';
+import { PagePaginationDto } from '../dto';
 
 @Injectable()
 export class SucursalService {
@@ -10,19 +10,19 @@ export class SucursalService {
     return this.sucursalRepository.createSucursal(createSucursalDto);
   }
 
-  findAll() {
-    return `This action returns all sucursal`;
+  findAll(query: PagePaginationDto) {
+    return this.sucursalRepository.findAllActiveSucursales(query);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sucursal`;
+  findOne(id: string) {
+    return this.sucursalRepository.findOneSucursal(id);
   }
 
-  // update(id: number, updateSucursalDto: UpdateSucursalDto) {
-  //   return `This action updates a #${id} sucursal`;
-  // }
+  update(id: string, updateSucursalDto: UpdateSucursalDto) {
+    return this.sucursalRepository.updateSucursal(id, updateSucursalDto);
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} sucursal`;
+  remove(id: string) {
+    return this.sucursalRepository.deactivateSucursal(id);
   }
 }

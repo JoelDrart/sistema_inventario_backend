@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { schema } from '../db';
-import { DrizzleAsyncProvider } from 'src/drizzle/drizzle.provider';
+import { DrizzleAsyncProvider } from '../drizzle/drizzle.provider';
 import { and, asc, count, desc, eq } from 'drizzle-orm';
 import {
   CreateSucursalDto,
@@ -95,7 +95,7 @@ export class SucursalRepository {
         })
         .returning();
 
-      console.log('Sucursal creada:', sucursal);
+      // console.log('Sucursal creada:', sucursal);
 
       return {
         status: 'success',

@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/authGuard.guard';
 import { RolesGuard } from './auth/guard/rol.guard';
+import { BodegaModule } from './bodega/bodega.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RolesGuard } from './auth/guard/rol.guard';
     UsersModule,
     SucursalModule,
     AuthModule,
+    BodegaModule,
   ],
   providers: [
     {

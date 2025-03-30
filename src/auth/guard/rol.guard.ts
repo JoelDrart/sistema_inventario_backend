@@ -19,7 +19,7 @@ export class RolesGuard implements CanActivate {
     );
 
     if (!requiredRoles) {
-      console.log('No hay roles requeridos para esta ruta');
+      // console.log('No hay roles requeridos para esta ruta');
       return true; // Si no hay roles requeridos, permitir acceso
     }
 

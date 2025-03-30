@@ -11,7 +11,7 @@ import {
 import { SucursalService } from './sucursal.service';
 import { CreateSucursalDto, SucursalIdDto, UpdateSucursalDto } from './dto';
 import { PagePaginationDto, Role } from '../dto';
-import { Roles } from 'src/auth/decorators/rol.decorator';
+import { Roles } from '../auth/decorators/rol.decorator';
 
 @Controller('sucursal')
 export class SucursalController {

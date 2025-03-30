@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { schema } from '../db/index';
-import { DrizzleAsyncProvider } from 'src/drizzle/drizzle.provider';
+import { DrizzleAsyncProvider } from '../drizzle/drizzle.provider';
 import { eq } from 'drizzle-orm';
 import { User } from './entity/user.entity';
 import { RegisterAuthDto } from '../auth/dto';

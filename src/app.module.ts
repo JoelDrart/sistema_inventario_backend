@@ -5,6 +5,9 @@ import { UsersModule } from './users/users.module';
 import { SucursalModule } from './sucursal/sucursal.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guard/authGuard.guard';
+import { RolesGuard } from './auth/guard/rol.guard';
 
 @Module({
   imports: [
@@ -13,6 +16,16 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     SucursalModule,
     AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {

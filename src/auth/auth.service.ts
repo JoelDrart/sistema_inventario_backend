@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import {
-  AccessTokenDto,
   LoginAuthDto,
+  LoginResponseDto,
   RegisterAuthDto,
   RegisterResponseDto,
 } from './dto';
@@ -50,9 +50,10 @@ export class AuthService {
     }
   }
 
-  async signIn(user: LoginAuthDto): Promise<AccessTokenDto> {
+  async signIn(user: LoginAuthDto): Promise<LoginResponseDto> {
+    // TODO: Validar si el usuario está activo o no
     const userFound = await this.usersService.findUserByEmail(user.email);
-    console.log('userFound', userFound);
+    // console.log('userFound', userFound);
     if (!userFound) {
       throw new BadRequestException('Contraseña o email incorrecto');
     }
@@ -60,7 +61,7 @@ export class AuthService {
       user.password,
       userFound.password ?? '',
     );
-    console.log('isPasswordValid', isPasswordValid);
+    // console.log('isPasswordValid', isPasswordValid);
     if (!isPasswordValid) {
       throw new BadRequestException('Contraseña o email incorrecto');
     }
@@ -73,7 +74,10 @@ export class AuthService {
       expiresIn: '1h',
     });
     return {
-      accessToken,
+      status: 'success',
+      data: {
+        accessToken,
+      },
     };
   }
 }

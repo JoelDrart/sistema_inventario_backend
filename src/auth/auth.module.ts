@@ -10,6 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     UsersModule,
     JwtModule.registerAsync({
       imports: [ConfigModule], // Importa ConfigModule
+      // eslint-disable-next-line @typescript-eslint/require-await
       useFactory: async (configService: ConfigService) => ({
         global: true,
         secret: configService.get<string>('JWT_SECRET'), // Obtiene JWT_SECRET de las variables de entorno
@@ -20,5 +21,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService, JwtModule], // Exporta AuthService y JwtModule para que puedan ser utilizados en otros módulos
 })
 export class AuthModule {}

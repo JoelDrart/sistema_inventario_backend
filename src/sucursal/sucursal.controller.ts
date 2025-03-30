@@ -10,13 +10,15 @@ import {
 } from '@nestjs/common';
 import { SucursalService } from './sucursal.service';
 import { CreateSucursalDto, SucursalIdDto, UpdateSucursalDto } from './dto';
-import { PagePaginationDto } from '../dto';
+import { PagePaginationDto, Role } from '../dto';
+import { Roles } from 'src/auth/decorators/rol.decorator';
 
 @Controller('sucursal')
 export class SucursalController {
   constructor(private readonly sucursalService: SucursalService) {}
 
   @Post()
+  @Roles(Role.ADMIN)
   create(@Body() createSucursalDto: CreateSucursalDto) {
     return this.sucursalService.create(createSucursalDto);
   }

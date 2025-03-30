@@ -57,6 +57,12 @@ export class LoginAuthDto {
   password: string;
 }
 
+export class LoginResponseDto {
+  status: string;
+  data: AccessTokenDto | null;
+  message?: string;
+}
+
 export class AccessTokenDto {
   accessToken: string;
 }

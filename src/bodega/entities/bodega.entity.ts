@@ -5,8 +5,8 @@ export class Bodega {
   esPrincipal: boolean | null;
   descripcion?: string | null;
   estado?: string | null;
-  created_at?: Date | null;
-  updated_at?: Date | null;
+  created_at?: Date | string | null;
+  updated_at?: Date | string | null;
 
   constructor() {
     this.id = null;

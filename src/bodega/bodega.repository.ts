@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DrizzleAsyncProvider } from '../drizzle/drizzle.provider';
 import { schema } from '../db';
-import { asc, count, desc, eq } from 'drizzle-orm';
+import { and, asc, count, desc, eq } from 'drizzle-orm';
 import { BodegaResponseDto, CreateBodegaDto } from './dto';
 import { Bodega } from './entities/bodega.entity';
 import { EntityStatus, PagePaginationDto } from '../dto';
@@ -51,12 +51,37 @@ export class BodegaRepository {
 
   async createBodega(newBodega: CreateBodegaDto): Promise<BodegaResponseDto> {
     try {
+      const sucursalExists = await this.db
+        .select({ id: schema.sucursal.idSucursal })
+        .from(schema.sucursal)
+        .where(eq(schema.sucursal.idSucursal, newBodega.idSucursal))
+        .limit(1);
+
+      if (sucursalExists.length === 0)
+        throw new Error('La sucursal que desea asignar esta bodega no existe');
+
+      // Validate if bodega with same name exists in the same sucursal
+      const existingBodega = await this.db
+        .select()
+        .from(schema.bodega)
+        .where(
+          and(
+            eq(schema.bodega.nombre, newBodega.nombre),
+            eq(schema.bodega.idSucursal, newBodega.idSucursal),
+          ),
+        )
+        .limit(1);
+
+      if (existingBodega.length > 0)
+        throw new Error('Ya existe una bodega con ese nombre en esta sucursal');
+
       const bodegaId = await this.generateBodegaId();
 
       const bodega = await this.db
         .insert(schema.bodega)
         .values({
           idBodega: bodegaId,
+          idSucursal: newBodega.idSucursal,
           nombre: newBodega.nombre,
           descripcion: newBodega.descripcion,
           esPrincipal: newBodega.esPrincipal,
@@ -70,6 +95,8 @@ export class BodegaRepository {
       bodegaData.descripcion = bodega[0].descripcion;
       bodegaData.esPrincipal = bodega[0].esPrincipal;
       bodegaData.estado = bodega[0].estado;
+      bodegaData.created_at = bodega[0].createdAt;
+      bodegaData.updated_at = bodega[0].updatedAt;
 
       return {
         status: 'success',

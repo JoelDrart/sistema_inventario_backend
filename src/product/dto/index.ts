@@ -1,16 +1,19 @@
 import { PartialType } from '@nestjs/mapped-types';
 import {
+  IsInt,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
+  Min,
   MinLength,
   ValidateIf,
 } from 'class-validator';
 import { Product } from '../entity';
 import { PaginationMeta } from '../../dto';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 export class CreateProductoDto {
   @MaxLength(10, { message: 'El ID no debe exceder los 10 caracteres' })
@@ -94,5 +97,53 @@ export class ProductoResponseDto {
   status: string;
   data: { productos: Product | null | Product[] };
   pagination?: PaginationMeta | null;
+  message?: string;
+}
+
+export class FilterProductoDto {
+  @IsOptional()
+  @IsString()
+  nombre?: string;
+
+  @IsOptional()
+  @IsString()
+  codigo?: string;
+
+  @IsOptional()
+  @IsString()
+  categoria?: string;
+
+  @IsOptional()
+  @IsString()
+  subcategoria?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1, { message: 'El número de página debe ser mayor o igual a 1' })
+  @Type(() => Number)
+  page: number = 1;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1, { message: 'El tamaño de página debe ser mayor o igual a 1' })
+  @Max(100, { message: 'El tamaño de página no debe exceder 100' })
+  @Type(() => Number)
+  size: number = 10;
+
+  @IsOptional()
+  @IsString()
+  sortBy?: string;
+
+  @IsOptional()
+  @IsString()
+  sortOrder?: 'asc' | 'desc';
+}
+
+export class CategoriasResponseDto {
+  status: string;
+  data: {
+    categorias: string[] | string | null;
+    subcategorias: string[] | string | null;
+  };
   message?: string;
 }

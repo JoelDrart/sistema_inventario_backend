@@ -100,7 +100,7 @@ export class BodegaRepository {
 
       return {
         status: 'success',
-        data: bodegaData,
+        data: { bodegas: bodegaData },
       };
     } catch (error: unknown) {
       const err = error as Error;
@@ -136,7 +136,7 @@ export class BodegaRepository {
       if (bodegas.length === 0) {
         return {
           status: 'success',
-          data: null,
+          data: { bodegas: null },
           pagination: {
             total: 0,
             page,
@@ -150,7 +150,7 @@ export class BodegaRepository {
       if (bodegas.length === 0 && page > 1) {
         return {
           status: 'success',
-          data: null,
+          data: { bodegas: null },
           pagination: {
             total,
             page,
@@ -174,7 +174,7 @@ export class BodegaRepository {
 
       return {
         status: 'success',
-        data: bodegasData,
+        data: { bodegas: bodegasData },
         pagination: {
           total,
           page,

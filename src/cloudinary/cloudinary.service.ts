@@ -58,11 +58,51 @@ export class CloudinaryService {
     entity: string,
     entityId?: string,
   ): Promise<CloudinaryResponse> {
+    console.log('Starting uploadImage process...');
+    console.log('File received:', {
+      filename: file?.originalname,
+      size: file?.size,
+      mimetype: file?.mimetype,
+    });
+
+    if (!file) {
+      console.log('Error: No file provided');
+      throw new BadRequestException('No se ha proporcionado ningún archivo');
+    }
+
+    // Validar tipo de archivo
+    if (!file.mimetype.startsWith('image/')) {
+      console.log('Error: Invalid file type:', file.mimetype);
+      throw new BadRequestException('El archivo debe ser una imagen');
+    }
+
+    // Validar tamaño (5MB máximo)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      console.log('Error: File too large:', file.size);
+      throw new BadRequestException('El archivo no debe superar los 5MB');
+    }
+
+    if (!entity) {
+      console.log('Error: No entity specified');
+      throw new BadRequestException('Se requiere especificar una entidad');
+    }
+
     const folderPath = this.getFolderPath(entity, entityId);
-    return this.uploadFile(file, { folder: folderPath });
+    console.log('Upload folder path:', folderPath);
+
+    const result = await this.uploadFile(file, { folder: folderPath });
+    console.log('Upload completed successfully');
+    return result;
   }
 
   async deleteFile(publicId: string): Promise<CloudinaryResponse> {
+    if (!publicId) {
+      throw new BadRequestException(
+        'Se requiere un ID público para eliminar el archivo',
+      );
+    }
+
     try {
       const result = await this.cloudinary.uploader.destroy(publicId);
       if (result.result !== 'ok') {

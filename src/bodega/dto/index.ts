@@ -51,7 +51,7 @@ export class UpdateBodegaDto extends PartialType(CreateBodegaDto) {}
 
 export class BodegaResponseDto {
   status: string;
-  data: Bodega | null | Bodega[];
+  data: { bodegas: Bodega | null | Bodega[] };
   pagination?: PaginationMeta | null;
   message?: string;
 }

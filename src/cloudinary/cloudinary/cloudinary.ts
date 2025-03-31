@@ -6,11 +6,12 @@ export const CloudinaryProvider = 'CLOUDINARY';
 export const cloudinaryProvider = {
   provide: CloudinaryProvider,
   useFactory: (configService: ConfigService) => {
-    return cloudinary.config({
+    cloudinary.config({
       cloud_name: configService.get('CLOUDINARY_NAME'),
       api_key: configService.get('CLOUDINARY_API_KEY'),
       api_secret: configService.get('CLOUDINARY_API_SECRET'),
     });
+    return cloudinary; // Return the configured cloudinary instance
   },
   inject: [ConfigService],
 };

@@ -25,6 +25,7 @@ export class FileUploadService {
         entity,
         entityId,
       );
+      console.log('Upload result:', result);
 
       return {
         url: result.secure_url,

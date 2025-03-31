@@ -71,7 +71,7 @@ export class AuthService {
       rol: userFound.rol,
     };
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '1h',
+      expiresIn: '7d',
     });
     return {
       status: 'success',

@@ -103,7 +103,7 @@ export const producto = pgTable(
     impuesto: numeric({ precision: 5, scale: 2 }).default('0'),
     unidadMedida: varchar('unidad_medida', { length: 20 }).default('Unidad'),
     imagenUrl: varchar('imagen_url', { length: 255 }),
-    publicImageId: varchar('public_image_id', { length: 255 }),
+    publicImageId: varchar('id_public_image', { length: 255 }),
     estado: varchar({ length: 50 }).default('activo'),
     createdAt: timestamp('created_at', { mode: 'string' }).default(
       sql`CURRENT_TIMESTAMP`,

@@ -45,7 +45,7 @@ export class UpdateSucursalDto extends PartialType(CreateSucursalDto) {}
 
 export class SucursalResponseDto {
   status: string;
-  data: Sucursal | null | Sucursal[];
+  data: { sucursal: Sucursal | null | Sucursal[] };
   pagination?: PaginationMeta | null;
   message?: string;
 }

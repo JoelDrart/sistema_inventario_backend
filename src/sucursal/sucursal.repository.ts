@@ -100,9 +100,11 @@ export class SucursalRepository {
       return {
         status: 'success',
         data: {
-          nombre: sucursal[0].nombre,
-          direccion: sucursal[0].direccion,
-          telefono: sucursal[0].telefono,
+          sucursal: {
+            nombre: sucursal[0].nombre,
+            direccion: sucursal[0].direccion,
+            telefono: sucursal[0].telefono,
+          },
         },
       };
     } catch (error) {
@@ -139,7 +141,7 @@ export class SucursalRepository {
       if (sucursales.length === 0 && page === 1) {
         return {
           status: 'success',
-          data: null,
+          data: { sucursal: null },
           pagination: {
             total: 0,
             page,
@@ -154,7 +156,7 @@ export class SucursalRepository {
       if (sucursales.length === 0 && page > 1) {
         return {
           status: 'success',
-          data: null,
+          data: { sucursal: null },
           pagination: {
             total,
             page,
@@ -176,7 +178,7 @@ export class SucursalRepository {
 
       return {
         status: 'success',
-        data: sucursalData,
+        data: { sucursal: sucursalData },
         pagination: {
           total,
           page,
@@ -225,7 +227,7 @@ export class SucursalRepository {
       sucursalData.telefono = updatedSucursal[0].telefono;
       return {
         status: 'success',
-        data: sucursalData,
+        data: { sucursal: sucursalData },
       };
     } catch (error) {
       throw new InternalServerErrorException(
@@ -253,7 +255,7 @@ export class SucursalRepository {
 
       return {
         status: 'success',
-        data: null,
+        data: { sucursal: null },
         message: 'Sucursal eliminada correctamente',
       };
     } catch (error) {
@@ -280,7 +282,7 @@ export class SucursalRepository {
       if (sucursal.length === 0) {
         return {
           status: 'error',
-          data: null,
+          data: { sucursal: null },
           message: 'Sucursal no encontrada',
         };
       }
@@ -293,7 +295,7 @@ export class SucursalRepository {
 
       return {
         status: 'success',
-        data: sucursalData,
+        data: { sucursal: sucursalData },
       };
     } catch (error) {
       throw new InternalServerErrorException('Error al obtener la sucursal', {

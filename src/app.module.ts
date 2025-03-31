@@ -9,6 +9,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/authGuard.guard';
 import { RolesGuard } from './auth/guard/rol.guard';
 import { BodegaModule } from './bodega/bodega.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { BodegaModule } from './bodega/bodega.module';
     SucursalModule,
     AuthModule,
     BodegaModule,
+    CloudinaryModule,
+    FileUploadModule,
+    ProductModule,
   ],
   providers: [
     {

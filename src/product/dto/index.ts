@@ -5,6 +5,7 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
+  Matches,
   Max,
   MaxLength,
   Min,
@@ -20,7 +21,7 @@ export class CreateProductoDto {
   @MinLength(3, { message: 'El ID debe tener al menos 3 caracteres' })
   @IsString({ message: 'El ID debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El ID es requerido' })
-  id: string = 'productox';
+  id: string;
 
   @MaxLength(100, { message: 'El nombre no debe exceder los 100 caracteres' })
   @MinLength(3, { message: 'El nombre debe tener al menos 3 caracteres' })
@@ -146,4 +147,16 @@ export class CategoriasResponseDto {
     subcategorias: string[] | string | null;
   };
   message?: string;
+}
+
+export class StockParamsDto {
+  @IsString()
+  idProducto: string;
+
+  @IsString()
+  @Matches(/^bod\d{3}$/, {
+    message:
+      'El ID de bodega debe tener el formato "bod" seguido de 3 dígitos (ej. bod001)',
+  })
+  idBodega: string;
 }

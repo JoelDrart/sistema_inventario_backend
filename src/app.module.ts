@@ -14,6 +14,7 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 import { ProductModule } from './product/product.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { ProveedorModule } from './proveedor/proveedor.module';
+import { StockModule } from './stock/stock.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProveedorModule } from './proveedor/proveedor.module';
     ProductModule,
     ClienteModule,
     ProveedorModule,
+    StockModule,
   ],
   providers: [
     {

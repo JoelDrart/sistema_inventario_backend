@@ -9,7 +9,7 @@ export class BodegaController {
   constructor(private readonly bodegaService: BodegaService) {}
 
   @Post()
-  @Roles(Role.ADMIN)
+  // @Roles(Role.ADMIN)
   create(@Body() createBodegaDto: CreateBodegaDto) {
     return this.bodegaService.create(createBodegaDto);
   }

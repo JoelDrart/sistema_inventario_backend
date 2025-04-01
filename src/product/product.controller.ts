@@ -18,6 +18,7 @@ import {
   FilterProductoDto,
   ProductoResponseDto,
 } from './dto';
+import { StockProductoBodegaDto } from 'src/stock/dto';
 
 @Controller('product')
 export class ProductController {
@@ -54,5 +55,10 @@ export class ProductController {
   @Delete(':id')
   delete(@Param('id') id: string): Promise<ProductoResponseDto> {
     return this.productService.delete(id);
+  }
+
+  @Post('/stock')
+  createStock(@Body() stock: StockProductoBodegaDto) {
+    return this.productService.createStock(stock);
   }
 }

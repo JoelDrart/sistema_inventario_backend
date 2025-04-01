@@ -12,6 +12,7 @@ import { BodegaModule } from './bodega/bodega.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { ProductModule } from './product/product.module';
+import { ClienteModule } from './cliente/cliente.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ProductModule } from './product/product.module';
     CloudinaryModule,
     FileUploadModule,
     ProductModule,
+    ClienteModule,
   ],
   providers: [
     {

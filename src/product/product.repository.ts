@@ -10,7 +10,7 @@ import {
   ProductoResponseDto,
   UpdateProductoDto,
 } from './dto';
-import { and, asc, desc, eq, like, sql, SQL } from 'drizzle-orm';
+import { and, asc, eq, like, sql, SQL } from 'drizzle-orm';
 import { Product } from './entity';
 import { EntityStatus } from 'src/dto';
 

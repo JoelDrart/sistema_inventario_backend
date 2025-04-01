@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -41,5 +42,10 @@ export class ClienteController {
   @Get(':id')
   findOne(@Param() { id }: ClienteIdDto) {
     return this.clienteService.findOne(id);
+  }
+
+  @Delete(':id')
+  delete(@Param() { id }: ClienteIdDto) {
+    return this.clienteService.delete(id);
   }
 }

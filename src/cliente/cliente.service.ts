@@ -29,4 +29,8 @@ export class ClienteService {
   findAll(filterDto: FilterClienteDto): Promise<ClienteResponseDto> {
     return this.clienteRepository.findAllClientes(filterDto);
   }
+
+  delete(id: string): Promise<ClienteResponseDto> {
+    return this.clienteRepository.deleteCliente(id);
+  }
 }

@@ -445,4 +445,75 @@ export class ClienteRepository {
   }
 
   //TODO: Implementar el método de eliminar cliente (eliminar fisico si no tiene referencias en otros registros o eliminar logico si tiene referencias)
+
+  async deleteCliente(id: string): Promise<ClienteResponseDto> {
+    //Eliminar fisico si no tiene referencias en otros registros o eliminar logico si tiene referencias)
+    try {
+      const cliente = await this.db
+        .select()
+        .from(schema.cliente)
+        .where(
+          and(
+            eq(schema.cliente.idCliente, id),
+            eq(schema.cliente.estado, EntityStatus.ACTIVE), // Solo cliente activos
+          ),
+        )
+        .limit(1);
+
+      if (cliente.length === 0) {
+        throw new Error('El cliente no existe');
+      }
+
+      //verificar referencias
+      const tieneReferencias = await this.verificarReferenciasEnFacturas(id);
+      if (tieneReferencias) {
+        //eliminado logico
+        await this.db
+          .update(schema.cliente)
+          .set({ estado: EntityStatus.INACTIVE })
+          .where(eq(schema.cliente.idCliente, id));
+
+        return {
+          status: 'success',
+          data: {
+            clientes: null,
+          },
+          message: 'Cliente eliminado correctamente',
+        };
+      }
+      //eliminado fisico
+      await this.db
+        .delete(schema.cliente)
+        .where(eq(schema.cliente.idCliente, id));
+      return {
+        status: 'success',
+        data: {
+          clientes: null,
+        },
+        message: 'Cliente eliminado correctamente',
+      };
+    } catch (error: unknown) {
+      const err = error as Error;
+      throw new BadRequestException(
+        'No se pudo eliminar el cliente, intente de nuevo.',
+        {
+          cause: err,
+          description: err.message,
+        },
+      );
+    }
+  }
+
+  // Métodos auxiliares
+  private async verificarReferenciasEnFacturas(
+    clienteId: string,
+  ): Promise<boolean> {
+    const [factura] = await this.db
+      .select({ id: schema.factura.idFactura })
+      .from(schema.factura)
+      .where(eq(schema.factura.idCliente, clienteId))
+      .limit(1);
+
+    return !!factura;
+  }
 }

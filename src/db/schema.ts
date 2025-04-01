@@ -132,6 +132,7 @@ export const stock = pgTable(
     idProducto: varchar('id_producto', { length: 50 }),
     idBodega: varchar('id_bodega', { length: 50 }),
     cantidad: integer().notNull(),
+    unidadMedida: varchar('unidad', { length: 50 }).default('unidad'),
     createdAt: timestamp('created_at', { mode: 'string' }).default(
       sql`CURRENT_TIMESTAMP`,
     ),

@@ -181,6 +181,8 @@ export class ProductRepository {
     }
   }
 
+  //TODO: Si se actualiza el código, se debe actualizar TODAS las referencias a ese código en otras tablas (ej. stock, ventas, etc.)
+  //TODO: Si se actualiza la unidad de medida, actualizar tambien la unidad de medida en el stock
   async updateProduct(
     id: string,
     productToUpdate: UpdateProductoDto,

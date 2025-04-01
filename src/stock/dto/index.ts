@@ -1,4 +1,10 @@
-import { IsInt, IsNotEmpty, IsString, Matches } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsPositive,
+  IsString,
+  Matches,
+} from 'class-validator';
 import { PaginationMeta } from 'src/dto';
 
 export class StockProductoBodegaDto {
@@ -14,6 +20,7 @@ export class StockProductoBodegaDto {
   @IsNotEmpty({ message: 'El ID de bodega es requerido' })
   idBodega: string;
 
+  @IsPositive({ message: 'La cantidad debe ser un número positivo' })
   @IsInt({ message: 'La cantidad debe ser un número entero' })
   @IsNotEmpty({ message: 'La cantidad es requerida' })
   cantidad: number = 0;

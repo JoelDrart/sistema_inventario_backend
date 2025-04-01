@@ -28,6 +28,11 @@ export class StockRepository {
   ): Promise<StockProductoBodega | null> {
     try {
       const id = this.generateId(idProducto, idBodega);
+      const unidadMedida = await this.db
+        .select({ unidadMedida: schema.producto.unidadMedida })
+        .from(schema.producto)
+        .where(eq(schema.producto.idProducto, idProducto));
+
       const stockNuevo = await this.db
         .insert(schema.stock)
         .values({
@@ -35,6 +40,7 @@ export class StockRepository {
           idProducto,
           idBodega,
           cantidad,
+          unidadMedida: unidadMedida[0]?.unidadMedida,
         })
         .returning();
 
@@ -47,6 +53,7 @@ export class StockRepository {
         idProducto: stockNuevo[0].idProducto,
         idBodega: stockNuevo[0].idBodega,
         cantidad: stockNuevo[0].cantidad,
+        unidadMedida: stockNuevo[0].unidadMedida,
       };
     } catch (error: unknown) {
       const err = error as Error;
@@ -109,6 +116,39 @@ export class StockRepository {
     } catch (error) {
       console.error('Error checking stock existence:', error);
       throw new Error('Ocurrió un error al verificar la existencia del stock');
+    }
+  }
+
+  async getStock(
+    idProducto: string,
+    idBodega: string,
+  ): Promise<StockProductoBodega | null> {
+    try {
+      const stock = await this.db
+        .select()
+        .from(schema.stock)
+        .where(
+          and(
+            eq(schema.stock.idProducto, idProducto),
+            eq(schema.stock.idBodega, idBodega),
+          ),
+        )
+        .execute();
+
+      if (!stock[0] || !stock[0].idProducto || !stock[0].idBodega) {
+        return null;
+      }
+
+      return {
+        id: stock[0].idStock,
+        idProducto: stock[0].idProducto,
+        idBodega: stock[0].idBodega,
+        cantidad: stock[0].cantidad,
+        unidadMedida: stock[0].unidadMedida,
+      };
+    } catch (error) {
+      console.error('Error getting stock:', error);
+      throw new Error('Ocurrió un error al obtener el stock');
     }
   }
 }

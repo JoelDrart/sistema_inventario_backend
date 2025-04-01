@@ -14,7 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: async (configService: ConfigService) => ({
         global: true,
         secret: configService.get<string>('JWT_SECRET'), // Obtiene JWT_SECRET de las variables de entorno
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '7d' },
       }),
       inject: [ConfigService], // Inyecta ConfigService
     }),

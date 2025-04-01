@@ -48,6 +48,15 @@ export class ProveedorRepository {
     return proveedor.length > 0;
   }
 
+  private async validateDNI(dni: string): Promise<boolean> {
+    const proveedor = await this.db
+      .select({ dni: schema.proveedor.documentoIdentidad })
+      .from(schema.proveedor)
+      .where(eq(schema.proveedor.documentoIdentidad, dni))
+      .limit(1);
+    return proveedor.length > 0;
+  }
+
   async createProveedor(
     createProveedor: CreateProveedorDto,
   ): Promise<ProveedorResponseDto> {
@@ -57,6 +66,14 @@ export class ProveedorRepository {
       if (proveedorExists) {
         throw new Error('El proveedor ya existe, intente con otro ID.');
       }
+
+      if (
+        createProveedor.dni &&
+        (await this.validateDNI(createProveedor.dni))
+      ) {
+        throw new Error('El DNI ya está registrado, intente con otro.');
+      }
+
       const newProveedor = await this.db
         .insert(schema.proveedor)
         .values({
@@ -311,6 +328,66 @@ export class ProveedorRepository {
       const err = error as Error;
       throw new BadRequestException(
         'No se pudo encontrar los proveedores, intente de nuevo.',
+        {
+          cause: err,
+          description: err.message,
+        },
+      );
+    }
+  }
+
+  private async tieneReferencias(id: string): Promise<boolean> {
+    const referencias = await this.db
+      .select({ id: schema.compra.idCompra })
+      .from(schema.compra)
+      .where(eq(schema.compra.idProveedor, id))
+      .limit(1);
+    return referencias.length > 0;
+  }
+
+  async deleteProveedor(id: string): Promise<ProveedorResponseDto> {
+    try {
+      const proveedor = await this.db
+        .select({ id: schema.proveedor.idProveedor })
+        .from(schema.proveedor)
+        .where(eq(schema.proveedor.idProveedor, id))
+        .limit(1);
+
+      if (proveedor.length === 0) {
+        throw new Error('El proveedor no existe, verifique el ID.');
+      }
+
+      //verificar referencias - eliminado lógico
+      if (await this.tieneReferencias(id)) {
+        await this.db
+          .update(schema.proveedor)
+          .set({ estado: EntityStatus.INACTIVE })
+          .where(eq(schema.proveedor.idProveedor, id));
+
+        return {
+          status: 'success',
+          data: {
+            proveedores: null,
+          },
+          message: 'Proveedor eliminado correctamente',
+        };
+      }
+
+      await this.db
+        .delete(schema.proveedor)
+        .where(eq(schema.proveedor.idProveedor, id));
+
+      return {
+        status: 'success',
+        data: {
+          proveedores: null,
+        },
+        message: 'Proveedor eliminado correctamente',
+      };
+    } catch (error: unknown) {
+      const err = error as Error;
+      throw new BadRequestException(
+        'No se pudo eliminar el proveedor, intente de nuevo.',
         {
           cause: err,
           description: err.message,

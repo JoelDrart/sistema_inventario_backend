@@ -29,6 +29,6 @@ export class ProveedorService {
   }
 
   remove(id: string) {
-    return `This action removes a #${id} proveedor`;
+    return this.proveedorRepository.deleteProveedor(id);
   }
 }

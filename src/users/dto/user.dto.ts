@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsDateString,
   Min,
-  Length,
   IsIn,
   Matches,
 } from 'class-validator';
@@ -24,8 +23,9 @@ export class CreateUserDto {
   apellido: string;
 
   @IsString({ message: 'El documento de identidad debe ser texto' })
-  @Length(10, 13, {
-    message: 'El documento debe tener entre 10 y 13 caracteres',
+  @Matches(/^\d{10,13}$/, {
+    message:
+      'El documento debe contener solo números y tener entre 10 y 13 dígitos',
   })
   @IsNotEmpty({ message: 'El documento de identidad es requerido' })
   documentoIdentidad: string;

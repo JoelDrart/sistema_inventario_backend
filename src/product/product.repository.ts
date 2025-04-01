@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { schema } from '../db';
 import { DrizzleAsyncProvider } from '../drizzle/drizzle.provider';
-import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { FileUploadService } from '../file-upload/file-upload.service';
 import {
   CategoriasResponseDto,
   CreateProductoDto,
@@ -12,7 +12,7 @@ import {
 } from './dto';
 import { and, asc, eq, like, sql, SQL } from 'drizzle-orm';
 import { Product } from './entity';
-import { EntityStatus } from 'src/dto';
+import { EntityStatus } from '../dto';
 
 @Injectable()
 export class ProductRepository {

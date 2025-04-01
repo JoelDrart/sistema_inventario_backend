@@ -193,4 +193,6 @@ export class BodegaRepository {
       );
     }
   }
+
+  //TODO: Implementar eliminar bodega
 }

@@ -87,6 +87,10 @@ export class FilterClienteDto {
   apellido?: string;
 
   @IsOptional()
+  @Matches(/^\d{10,13}$/, {
+    message:
+      'El documento debe contener solo números y tener entre 10 y 13 dígitos',
+  })
   @IsString({ message: 'El DNI debe ser texto' })
   dni?: string;
 

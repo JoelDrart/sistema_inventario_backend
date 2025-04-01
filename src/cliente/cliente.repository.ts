@@ -9,7 +9,7 @@ import {
   UpdateClienteDto,
 } from './dto';
 import { and, desc, eq, ilike, like, sql, SQL } from 'drizzle-orm';
-import { EntityStatus } from 'src/dto';
+import { EntityStatus } from '../dto';
 
 @Injectable()
 export class ClienteRepository {
@@ -77,7 +77,7 @@ export class ClienteRepository {
 
   async create(createCliente: CreateClienteDto): Promise<ClienteResponseDto> {
     try {
-      console.log('createCliente', createCliente);
+      // console.log('createCliente', createCliente);
       const clienteId = await this.generateId();
       const clienteExists = await this.clienteExists(clienteId);
       if (clienteExists) {

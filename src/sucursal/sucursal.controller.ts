@@ -18,7 +18,7 @@ export class SucursalController {
   constructor(private readonly sucursalService: SucursalService) {}
 
   @Post()
-  @Roles(Role.ADMIN)
+  // @Roles(Role.ADMIN)
   create(@Body() createSucursalDto: CreateSucursalDto) {
     return this.sucursalService.create(createSucursalDto);
   }

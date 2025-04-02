@@ -3,12 +3,16 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
   UploadedFile,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -17,6 +21,7 @@ import {
   CreateProductoDto,
   FilterProductoDto,
   ProductoResponseDto,
+  StockParamsDto,
 } from './dto';
 import { StockProductoBodegaDto } from 'src/stock/dto';
 
@@ -60,5 +65,12 @@ export class ProductController {
   @Post('/stock')
   createStock(@Body() stock: StockProductoBodegaDto) {
     return this.productService.createStock(stock);
+  }
+
+  @Get('/stock/:idProducto/:idBodega')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  getStock(@Param() params: StockParamsDto) {
+    return this.productService.getStock(params);
   }
 }

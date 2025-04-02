@@ -5,6 +5,7 @@ import {
   CreateProductoDto,
   FilterProductoDto,
   ProductoResponseDto,
+  StockParamsDto,
 } from './dto';
 import {
   StockProductoBodegaDto,
@@ -95,7 +96,39 @@ export class ProductService {
     } catch (error: unknown) {
       const err = error as Error;
       console.error('Error creating stock:', err.message);
-      throw new BadRequestException('Ocurrió un error al crear el stock');
+      throw new BadRequestException('Ocurrió un error al crear el stock', {
+        cause: err,
+        description: err.message,
+      });
+    }
+  }
+
+  async getStock(
+    params: StockParamsDto,
+  ): Promise<StockProductoBodegaResponseDto> {
+    try {
+      const { idProducto, idBodega } = params;
+      const stock = await this.stockRepository.getStock(idProducto, idBodega);
+      if (!stock) {
+        throw new Error('No se encontró el stock');
+      }
+      return {
+        status: 'success',
+        data: {
+          stock,
+        },
+        message: 'Stock encontrado correctamente',
+      };
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('Error getting stock:', err.message);
+      throw new BadRequestException(
+        'Ocurrió un error al obtener el stock, intente de nuevo más tarde.',
+        {
+          cause: err,
+          description: err.message,
+        },
+      );
     }
   }
 }

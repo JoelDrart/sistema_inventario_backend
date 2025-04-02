@@ -101,6 +101,7 @@ export class SucursalRepository {
         status: 'success',
         data: {
           sucursales: {
+            idSucursal: sucursal[0].idSucursal,
             nombre: sucursal[0].nombre,
             direccion: sucursal[0].direccion,
             telefono: sucursal[0].telefono,

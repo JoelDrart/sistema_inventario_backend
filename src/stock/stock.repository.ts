@@ -27,7 +27,26 @@ export class StockRepository {
     cantidad: number = 0,
   ): Promise<StockProductoBodega | null> {
     try {
+      //verificar si existe la bodega y el producto
+      const producto = await this.db
+        .select()
+        .from(schema.producto)
+        .where(eq(schema.producto.idProducto, idProducto))
+        .execute();
+      if (!producto[0]) {
+        throw new Error('El producto no existe');
+      }
+      const bodega = await this.db
+        .select()
+        .from(schema.bodega)
+        .where(eq(schema.bodega.idBodega, idBodega))
+        .execute();
+      if (!bodega[0]) {
+        throw new Error('La bodega no existe');
+      }
+
       const id = this.generateId(idProducto, idBodega);
+
       const unidadMedida = await this.db
         .select({ unidadMedida: schema.producto.unidadMedida })
         .from(schema.producto)
@@ -57,7 +76,7 @@ export class StockRepository {
       };
     } catch (error: unknown) {
       const err = error as Error;
-      console.error('Error creating stock:', err.message);
+      console.error('Error creating stock Repo:', err.message);
       throw new Error(err.message);
     }
   }

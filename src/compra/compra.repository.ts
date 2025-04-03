@@ -108,7 +108,8 @@ export class CompraRepository {
                 idBodega,
                 cantidad,
                 costoUnitario,
-                cantidadDisponible: detalle.cantidadDisponible || 0,
+                cantidadDisponible:
+                  detalle.cantidadDisponible || detalle.cantidad,
               };
             }),
           )

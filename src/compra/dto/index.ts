@@ -15,8 +15,10 @@ import {
   Matches,
   IsNumberString,
   ValidateIf,
+  IsInt,
+  Max,
 } from 'class-validator';
-import { CompraCabecera, CompraDetalle } from '../entities';
+import { Compra, CompraCabecera, CompraFormatted } from '../entities';
 
 export class CreateCompraDetalleDto {
   //El id Lote será generado
@@ -55,6 +57,10 @@ export class CreateCompraDetalleDto {
 }
 
 export class CreateCompraDto {
+  @IsOptional()
+  @IsString({ message: 'El idCompra debe ser una cadena de texto' })
+  idCompra?: string;
+
   @IsString()
   @IsNotEmpty({ message: 'El idProveedor no puede estar vacío' })
   idProveedor: string;
@@ -94,8 +100,15 @@ export class UpdateCompraDto extends PartialType(CreateCompraDto) {}
 export class CompraResponseDto {
   status: string;
   data: {
-    header: CompraCabecera | null;
-    details: CompraDetalle[] | null;
+    compras: Compra[] | Compra | null;
+  };
+  message?: string;
+}
+
+export class CompraResponseFormattedDto {
+  status: string;
+  data: {
+    compras: CompraFormatted[] | CompraFormatted | null;
   };
   message?: string;
 }
@@ -103,4 +116,55 @@ export class CompraResponseListDto {
   status: string;
   data: CompraCabecera[] | null;
   message?: string;
+}
+
+export class FilterCompraDto {
+  @IsOptional()
+  @IsString({ message: 'El numero de factura debe ser una cadena de texto' })
+  numeroFacturaCompra?: string;
+
+  @IsOptional()
+  @IsString({ message: 'El idProveedor debe ser una cadena de texto' })
+  idProveedor?: string;
+
+  @IsOptional()
+  @IsString({ message: 'El idEmpleado debe ser una cadena de texto' })
+  empleado?: string;
+
+  @IsOptional()
+  @IsDateString({}, { message: 'El formato de fecha debe ser YYYY-MM-DD' })
+  fecha?: string;
+
+  @IsOptional()
+  @IsString({ message: 'El estado debe ser una cadena de texto' })
+  estado?: string;
+
+  @IsOptional()
+  @IsString({ message: 'El producto debe ser una cadena de texto' })
+  producto?: string;
+
+  @IsOptional()
+  @IsString({ message: 'La bodega debe ser una cadena de texto' })
+  bodega?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1, { message: 'El número de página debe ser mayor o igual a 1' })
+  @Type(() => Number)
+  page: number = 1;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1, { message: 'El tamaño de página debe ser mayor o igual a 1' })
+  @Max(100, { message: 'El tamaño de página no debe exceder 100' })
+  @Type(() => Number)
+  size: number = 10;
+
+  @IsOptional()
+  @IsString()
+  sortBy?: string;
+
+  @IsOptional()
+  @IsString()
+  sortOrder?: 'asc' | 'desc';
 }

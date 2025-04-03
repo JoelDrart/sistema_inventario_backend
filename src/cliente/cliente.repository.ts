@@ -444,8 +444,6 @@ export class ClienteRepository {
     }
   }
 
-  //TODO: Implementar el método de eliminar cliente (eliminar fisico si no tiene referencias en otros registros o eliminar logico si tiene referencias)
-
   async deleteCliente(id: string): Promise<ClienteResponseDto> {
     //Eliminar fisico si no tiene referencias en otros registros o eliminar logico si tiene referencias)
     try {

@@ -8,3 +8,10 @@ export enum Role {
   EMPLOYEE = 'empleado',
   CLIENT = 'cliente',
 }
+
+export enum OrderStatus {
+  PENDING = 'pendiente',
+  PROCESSED = 'procesada',
+  ANULATED = 'anulado',
+  CANCELED = 'cancelado',
+}

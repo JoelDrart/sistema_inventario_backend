@@ -5,7 +5,7 @@ import { UsersModule } from './users/users.module';
 import { SucursalModule } from './sucursal/sucursal.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/authGuard.guard';
 import { RolesGuard } from './auth/guard/rol.guard';
 import { BodegaModule } from './bodega/bodega.module';
@@ -15,6 +15,8 @@ import { ProductModule } from './product/product.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { ProveedorModule } from './proveedor/proveedor.module';
 import { StockModule } from './stock/stock.module';
+import { CompraModule } from './compra/compra.module';
+import { EmpleadoInterceptor } from './common/interceptors/empleado.interceptor';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { StockModule } from './stock/stock.module';
     ClienteModule,
     ProveedorModule,
     StockModule,
+    CompraModule,
   ],
   providers: [
     {
@@ -39,6 +42,10 @@ import { StockModule } from './stock/stock.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: EmpleadoInterceptor,
     },
   ],
 })

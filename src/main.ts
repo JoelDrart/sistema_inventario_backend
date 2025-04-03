@@ -1,31 +1,53 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ValidationPipe,
+  HttpException,
+  HttpStatus,
+  ValidationError,
+} from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      stopAtFirstError: true,
+      stopAtFirstError: true, // Cambiado a false para ver todos los errores
       whitelist: true,
-      exceptionFactory: (errors) => {
-        // console.log('Validation Errors:', JSON.stringify(errors, null, 2));
+      forbidNonWhitelisted: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        interface ValidationErrorResponse {
+          field: string;
+          messages: string[];
+        }
 
-        // Modificación para incluir los nombres de los campos
-        const validationErrors = errors.reduce(
-          (acc: { field: string; messages: string[] }[], error) => {
+        const formatErrors = (
+          errors: ValidationError[],
+          parentProperty = '',
+        ): ValidationErrorResponse[] => {
+          return errors.flatMap((error) => {
+            const property = parentProperty
+              ? `${parentProperty}[${error.property}] `
+              : error.property;
+
+            // Manejar errores con constraints
             if (error.constraints) {
-              const errorMessages = Object.values(error.constraints);
-              acc.push({
-                field: error.property,
-                messages: errorMessages,
-              });
+              return {
+                field: property,
+                messages: Object.values(error.constraints),
+              };
             }
-            return acc;
-          },
-          [],
-        );
+
+            // Manejar arrays/objetos anidados
+            if (error.children && error.children.length > 0) {
+              return formatErrors(error.children, property);
+            }
+
+            return [];
+          });
+        };
+
+        const validationErrors = formatErrors(errors);
 
         throw new HttpException(
           {

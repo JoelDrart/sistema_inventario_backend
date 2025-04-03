@@ -11,7 +11,6 @@ import {
   MaxLength,
   Min,
   MinLength,
-  ValidateIf,
 } from 'class-validator';
 import { Product } from '../entity';
 import { PaginationMeta } from '../../dto';
@@ -54,13 +53,15 @@ export class CreateProductoDto {
   @IsNotEmpty({ message: 'La subcategoría es requerida' })
   subcategoria: string;
 
-  @IsNumberString({}, { message: 'El precio debe ser un número válido' })
+  @IsNumberString(
+    {},
+    { message: 'El costo unitario debe ser un número válido' },
+  )
   @Transform(({ value }) => {
-    // Convierte number a string si es necesario
-    if (typeof value === 'number') return value.toString();
-    return value;
+    if (value === undefined || value === null) return undefined;
+    return value.toString();
   })
-  @ValidateIf((_, value) => value !== undefined)
+  @IsNotEmpty({ message: 'El costo unitario es requerido' })
   precio: string;
 
   @IsOptional()

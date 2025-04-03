@@ -3,7 +3,8 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { schema } from 'src/db';
 import { DrizzleAsyncProvider } from 'src/drizzle/drizzle.provider';
 import { StockProductoBodega } from './entity';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
+import { NodePgTransaction } from 'src/dto/drizzle.types';
 
 @Injectable()
 export class StockRepository {
@@ -169,5 +170,58 @@ export class StockRepository {
       console.error('Error getting stock:', error);
       throw new Error('Ocurrió un error al obtener el stock');
     }
+  }
+  /**
+   * Ajusta el stock de un producto en una bodega
+   * @param tx Transacción opcional
+   * @param idBodega ID de la bodega
+   * @param idProducto ID del producto
+   * @param cantidad Cantidad a ajustar (positivo para aumentar, negativo para disminuir)
+   */
+  async ajustarStock(
+    tx: NodePgDatabase<typeof schema> | NodePgTransaction,
+    idBodega: string,
+    idProducto: string,
+    cantidad: number,
+  ): Promise<StockProductoBodega> {
+    const db = (tx || this.db) as NodePgDatabase<typeof schema>;
+
+    // Verificar si existe el stock
+    const existe = await this.stockExists(idProducto, idBodega);
+
+    if (!existe) {
+      // Crear registro de stock si no existe
+      await this.createStock(idProducto, idBodega, cantidad);
+    }
+
+    // Actualizar el stock
+    const [stockActualizado] = await db
+      .update(schema.stock)
+      .set({
+        cantidad: sql`${schema.stock.cantidad} + ${cantidad}`,
+      })
+      .where(
+        and(
+          eq(schema.stock.idProducto, idProducto),
+          eq(schema.stock.idBodega, idBodega),
+        ),
+      )
+      .returning();
+
+    if (
+      !stockActualizado ||
+      !stockActualizado.idProducto ||
+      !stockActualizado.idBodega
+    ) {
+      throw new Error('No se pudo actualizar el stock');
+    }
+
+    return {
+      id: stockActualizado.idStock,
+      idProducto: stockActualizado.idProducto,
+      idBodega: stockActualizado.idBodega,
+      cantidad: stockActualizado.cantidad,
+      unidadMedida: stockActualizado.unidadMedida,
+    };
   }
 }

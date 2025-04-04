@@ -12,17 +12,87 @@ import {
 export class CompraService {
   constructor(private compraRepo: CompraRepository) {}
 
-  getCompras(filter: FilterCompraDto): CompraResponseFormattedDto {
+  async getCompras(
+    filter: FilterCompraDto,
+  ): Promise<CompraResponseFormattedDto> {
     try {
-      const { page, size } = filter;
+      // console.log('Filtros recibidos:', filter);
+
+      const {
+        page,
+        size,
+        bodega,
+        empleado,
+        estado,
+        fecha,
+        idProveedor,
+        numeroFacturaCompra,
+        producto,
+        sortBy,
+        sortOrder,
+      } = filter;
 
       const offset = (page - 1) * size;
-      console.log('Filter recibido:', filter);
-      // const compras = await this.compraRepo.getCompras(filter);
+
+      const { compras, total } = await this.compraRepo.getCompras(
+        page,
+        size,
+        offset,
+        bodega,
+        empleado,
+        estado,
+        fecha,
+        idProveedor,
+        numeroFacturaCompra,
+        producto,
+        sortBy,
+        sortOrder,
+      );
+
+      // Calcular el total de páginas
+      const totalPages = Math.ceil(total / size);
+
+      // Caso 1: No hay datos
+      if (total === 0) {
+        return {
+          status: 'success',
+          message: 'No se encontraron compras con los filtros especificados',
+          data: { compras: [] },
+          pagination: {
+            total: 0,
+            pages: 0,
+            page,
+            size,
+          },
+        };
+      }
+
+      // Caso 2: Página solicitada fuera de rango
+      if (page > totalPages) {
+        return {
+          status: 'error',
+          message: `La página solicitada (${page}) excede el total de páginas disponibles (${totalPages})`,
+          data: { compras: [] },
+          pagination: {
+            total,
+            pages: totalPages,
+            page,
+            size,
+          },
+        };
+      }
+
+      // Caso 3: Datos encontrados correctamente
       return {
         status: 'success',
-        message: 'Compras obtenidas correctamente',
-        data: { compras: null },
+        message: `Se encontraron ${total} compras`,
+        data: { compras },
+        pagination: {
+          total,
+          pages: totalPages,
+          page,
+          size,
+        },
       };
     } catch (error: unknown) {
       console.error('Error al obtener las compras:', error);

@@ -5,7 +5,7 @@ import { schema } from '../db';
 import { CreateCompraDto, UpdateCompraDto } from './dto';
 import { Compra, CompraFormatted } from './entities';
 import { v4 as uuidv4 } from 'uuid';
-import { desc, eq, or, sql } from 'drizzle-orm';
+import { desc, eq, or, SQL, sql, like, and } from 'drizzle-orm';
 import { OrderStatus } from 'src/dto';
 import { StockRepository } from 'src/stock/stock.repository';
 
@@ -583,8 +583,170 @@ export class CompraRepository {
     };
   }
 
-  getCompras() {
-    return 'ssd';
+  async getCompras(
+    page: number,
+    limit: number,
+    offset: number,
+    bodega?: string,
+    empleado?: string,
+    estado?: string,
+    fecha?: string,
+    idProveedor?: string,
+    numeroFactura?: string,
+    producto?: string,
+    sortBy?: string,
+    sortOrder?: 'asc' | 'desc',
+  ): Promise<{ compras: CompraFormatted[]; total: number }> {
+    try {
+      const conditionsHeader: SQL[] = [];
+
+      // Condición para búsqueda de empleado por nombre completo
+      if (empleado) {
+        conditionsHeader.push(sql`EXISTS (
+          SELECT 1 FROM ${schema.empleado} e 
+          WHERE e.id_empleado = ${schema.compra.idEmpleado} 
+          AND LOWER(CONCAT(e.nombre, ' ', e.apellido)) LIKE LOWER(${`%${empleado}%`})
+        )`);
+      }
+
+      if (estado) {
+        conditionsHeader.push(eq(schema.compra.estado, estado));
+      }
+      if (fecha) {
+        conditionsHeader.push(eq(schema.compra.fecha, fecha));
+      }
+      if (idProveedor) {
+        conditionsHeader.push(eq(schema.compra.idProveedor, idProveedor));
+      }
+      if (numeroFactura) {
+        conditionsHeader.push(
+          like(schema.compra.numeroFactura, `%${numeroFactura}%`),
+        );
+      }
+
+      // Condición para búsqueda por producto en los detalles
+      if (producto) {
+        conditionsHeader.push(sql`EXISTS (
+          SELECT 1 FROM ${schema.compraDetalle} cd
+          JOIN ${schema.producto} p ON p.id_producto = cd.id_producto
+          WHERE cd.id_compra = ${schema.compra.idCompra}
+          AND LOWER(p.nombre) LIKE LOWER(${`%${producto}%`})
+        )`);
+      }
+
+      // Condición para búsqueda por bodega en los detalles
+      if (bodega) {
+        conditionsHeader.push(sql`EXISTS (
+          SELECT 1 FROM ${schema.compraDetalle} cd
+          JOIN ${schema.bodega} b ON b.id_bodega = cd.id_bodega
+          WHERE cd.id_compra = ${schema.compra.idCompra}
+          AND LOWER(b.nombre) LIKE LOWER(${`%${bodega}%`})
+        )`);
+      }
+
+      // Construir ORDER BY
+      let orderBy: SQL;
+      if (sortBy && sortBy in schema.compra) {
+        const column = schema.compra[sortBy as keyof typeof schema.compra];
+        if (column) {
+          orderBy =
+            sortOrder === 'desc' ? sql`${column} DESC` : sql`${column} ASC`;
+        } else {
+          orderBy = sql`${schema.compra.createdAt} DESC`;
+        }
+      } else {
+        orderBy = sql`${schema.compra.createdAt} DESC`;
+      }
+
+      // Obtener el total de registros primero
+      const totalResult = await this.db
+        .select({ count: sql<number>`count(*)` })
+        .from(schema.compra)
+        .where(
+          conditionsHeader.length > 0 ? and(...conditionsHeader) : undefined,
+        );
+
+      const total = Number(totalResult[0].count);
+
+      // Si no hay resultados, retornar temprano
+      if (total === 0) {
+        return { compras: [], total: 0 };
+      }
+
+      // Consulta principal con paginación
+      const compras = await this.db
+        .select()
+        .from(schema.compra)
+        .where(
+          conditionsHeader.length > 0 ? and(...conditionsHeader) : undefined,
+        )
+        .orderBy(orderBy)
+        .limit(limit)
+        .offset((page - 1) * limit);
+
+      // Obtener y formatear los resultados
+      const comprasFormatted: CompraFormatted[] = await Promise.all(
+        compras.map(async (compra) => {
+          const nombreProveedor = await this.getNombreProveedorById(
+            compra.idProveedor || '',
+          );
+          const nombreEmpleado = await this.getNombreEmpleadoById(
+            compra.idEmpleado || '',
+          );
+
+          const detalles = await this.db
+            .select()
+            .from(schema.compraDetalle)
+            .where(eq(schema.compraDetalle.idCompra, compra.idCompra));
+
+          // Obtener nombres de productos y bodegas para cada detalle
+          const detallesFormatted = await Promise.all(
+            detalles.map(async (detalle) => ({
+              idLote: detalle.idLote,
+              idCompra: detalle.idCompra!,
+              idProducto: detalle.idProducto!,
+              producto: await this.getNombreProductoById(
+                detalle.idProducto || '',
+              ),
+              idBodega: detalle.idBodega!,
+              bodega: await this.getNombreBodegaById(detalle.idBodega || ''),
+              cantidad: detalle.cantidad,
+              costoUnitario: detalle.costoUnitario,
+              cantidadDisponible: detalle.cantidadDisponible || 0,
+            })),
+          );
+
+          return {
+            header: {
+              id: compra.idCompra,
+              numeroFactura: compra.numeroFactura || '',
+              idProveedor: compra.idProveedor || '',
+              proveedor: nombreProveedor || '',
+              id_Empleado: compra.idEmpleado || '',
+              empleado: nombreEmpleado || '',
+              fecha: compra.fecha,
+              total: compra.total,
+              observacion: compra.observaciones || '',
+              estado: compra.estado || '',
+              createdAt: compra.createdAt,
+              updatedAt: compra.updatedAt,
+            },
+            details: detallesFormatted,
+          };
+        }),
+      );
+
+      return {
+        compras: comprasFormatted,
+        total,
+      };
+    } catch (error: unknown) {
+      const err = error as Error;
+      throw new BadRequestException('Error al buscar compras', {
+        cause: err,
+        description: err.message,
+      });
+    }
   }
 
   async getNombreEmpleadoById(idEmpleado: string): Promise<string | null> {

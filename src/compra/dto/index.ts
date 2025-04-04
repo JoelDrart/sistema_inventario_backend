@@ -105,13 +105,22 @@ export class CompraResponseDto {
   message?: string;
 }
 
+export interface PaginationMetadata {
+  total: number;
+  pages: number;
+  page: number;
+  size: number;
+}
+
 export class CompraResponseFormattedDto {
   status: string;
   data: {
     compras: CompraFormatted[] | CompraFormatted | null;
   };
+  pagination?: PaginationMetadata;
   message?: string;
 }
+
 export class CompraResponseListDto {
   status: string;
   data: CompraCabecera[] | null;

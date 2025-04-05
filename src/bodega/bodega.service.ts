@@ -13,4 +13,6 @@ export class BodegaService {
   findAll(query: PagePaginationDto): Promise<BodegaResponseDto> {
     return this.bodegaRepository.findAllActiveBodegas(query);
   }
+
+  //TODO: Hacer toda la logica de los movimientos de bodega
 }

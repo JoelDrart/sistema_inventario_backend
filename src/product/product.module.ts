@@ -9,5 +9,6 @@ import { StockModule } from 'src/stock/stock.module';
   imports: [FileUploadModule, StockModule],
   controllers: [ProductController],
   providers: [ProductService, ProductRepository],
+  exports: [ProductService],
 })
 export class ProductModule {}

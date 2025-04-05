@@ -131,4 +131,6 @@ export class ProductService {
       );
     }
   }
+
+  //Funciones de utilidad para el manejo de productos
 }

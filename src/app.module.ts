@@ -17,6 +17,7 @@ import { ProveedorModule } from './proveedor/proveedor.module';
 import { StockModule } from './stock/stock.module';
 import { CompraModule } from './compra/compra.module';
 import { EmpleadoInterceptor } from './common/interceptors/empleado.interceptor';
+import { FacturaModule } from './factura/factura.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { EmpleadoInterceptor } from './common/interceptors/empleado.interceptor'
     ProveedorModule,
     StockModule,
     CompraModule,
+    FacturaModule,
   ],
   providers: [
     {

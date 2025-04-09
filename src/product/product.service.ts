@@ -12,6 +12,7 @@ import {
   StockProductoBodegaResponseDto,
 } from '../stock/dto';
 import { StockRepository } from '../stock/stock.repository';
+import { Product } from './entity';
 
 @Injectable()
 export class ProductService {
@@ -133,4 +134,20 @@ export class ProductService {
   }
 
   //Funciones de utilidad para el manejo de productos
+
+  async getProductById(id: string): Promise<Product | null> {
+    const product = await this.productRepository.getProductById(id);
+    if (!product) {
+      throw new Error('Producto no encontrado');
+    }
+    return product;
+  }
+
+  async getNombreProductoById(id: string): Promise<string | null> {
+    const product = await this.productRepository.getProductById(id);
+    if (!product) {
+      throw new Error('Producto no encontrado');
+    }
+    return product.nombre;
+  }
 }

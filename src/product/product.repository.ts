@@ -141,7 +141,7 @@ export class ProductRepository {
     }
   }
 
-  private async getProductById(id: string): Promise<Product | null> {
+  async getProductById(id: string): Promise<Product | null> {
     try {
       const product = await this.db
         .select()

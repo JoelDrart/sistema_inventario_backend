@@ -12,9 +12,10 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      enableDebugMessages: true,
       stopAtFirstError: true, // Cambiado a false para ver todos los errores
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
       exceptionFactory: (errors: ValidationError[]) => {
         interface ValidationErrorResponse {
           field: string;

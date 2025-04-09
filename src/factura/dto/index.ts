@@ -76,6 +76,10 @@ export class CreateFacturaDto {
   fecha: Date;
 
   @IsNumberString({}, { message: 'El subtotal debe ser un número válido' })
+  @Transform(({ value }) => {
+    if (typeof value === 'number') return value.toString();
+    return value;
+  })
   @IsNotEmpty({ message: 'El subtotal es requerido' })
   subtotal: string;
 
